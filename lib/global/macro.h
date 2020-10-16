@@ -1,0 +1,23 @@
+#ifndef LIB_GLOBAL_MACRO_H_
+#define LIB_GLOBAL_MACRO_H_
+
+#define DEFAULT_ALLOCATION_SIZE 1
+#define MAX_BUFFER_DEFAULT 10000
+
+void CHECK_MEM_ALLOCATION(void* ptr);
+
+int CHECK(int i, char* err_msg_format, ...);
+
+void CLEAR_CHAR_BUFFER(char* ptr, int len);
+
+void CHECK_IF_NULL(void* ptr, char* err_msg);
+
+void CLEAR_STRUCT(void* ptr, int len);
+
+void SIZE_CHECK(int nbyte, int expected_size, char* err_msg);
+
+int IS_INTERGER(char* str);
+
+int IS_EQUALS(char* str1, char* str2);
+
+#endif
