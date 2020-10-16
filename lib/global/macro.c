@@ -62,3 +62,11 @@ int IS_INTERGER(char* str) {
 int IS_EQUALS(char* str1, char* str2){
 	return strncmp(str1, str2, strlen(str2) + 1) == 0;
 }
+
+void EXEC(int (*exec)(const char*, char* const*), char * const* argv, void (*callback)(FILE*, char*, ...), char *args){
+	
+	if(exec(argv[0], argv) == -1){
+		callback(stderr, "could not execute %s", args);
+		exit(1);
+	}
+}

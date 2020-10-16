@@ -3,18 +3,20 @@
 #include <stdlib.h>
 
 #include "../global/data_structure.h"
+#include "../global/network.h"
 #include "../global/macro.h"
 
 static int num_of_queue = 0;
 static queue_node* head;
 static queue_node* tail;
 
-void queue_request(request* req) {
+void queue_request(socket_addr* client_info, request* req) {
 	/** create new quest node */
 	queue_node* new_node = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(request));
 	CHECK_MEM_ALLOCATION(new_node);
 
 	/** populate the new node */
+    new_node->client_info = client_info;
 	new_node->req = req;
 	new_node->next = NULL;
 
@@ -50,6 +52,7 @@ queue_node* deque_request(){
 }
 
 void free_queue_node(queue_node *node){
+    free(node->client_info);
     free(node->req);
     free(node);
 }

@@ -1,6 +1,8 @@
 #ifndef LIB_GLOBAL_MACRO_H_
 #define LIB_GLOBAL_MACRO_H_
 
+#include <stdio.h>
+
 #define DEFAULT_ALLOCATION_SIZE 1
 #define MAX_BUFFER_DEFAULT 10000
 
@@ -19,5 +21,7 @@ void SIZE_CHECK(int nbyte, int expected_size, char* err_msg);
 int IS_INTERGER(char* str);
 
 int IS_EQUALS(char* str1, char* str2);
+
+void EXEC(int (*exec)(const char*, char* const*), char * const* argv, void (*callback)(FILE*, char*, ...), char *args);
 
 #endif

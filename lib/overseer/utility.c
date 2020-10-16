@@ -149,7 +149,8 @@ void request_exec(request req) {
 		}
 
 		/** replace child proceses with the new proceses */
-		CHECK(execvp(result_argv[0], result_argv), "could not execute %s", req.arguments);
+		// CHECK(execvp(result_argv[0], result_argv), "could not execute %s", req.arguments);
+		EXEC(execvp, result_argv, print_log, req.arguments);
 		/** any argument past this, will not be executed */
 
 	} else if (pid > 0) { /** parrent process */
@@ -162,6 +163,7 @@ void request_exec(request req) {
 		
 
 		/** wait for child process to terminate */
+		sleep(5);
 		waitpid(pid, &child_status_code, 0); /** blocking until child terminate*/
 		/** log child termination */
 		print_log(stdout, "%d has terminated with status code %d", pid, child_status_code);

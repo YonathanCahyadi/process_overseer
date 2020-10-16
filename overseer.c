@@ -42,13 +42,15 @@ int main(int argc, char** argv) {
 	/** set signal handler */
 	set_signal();
 
+	
+	
 	/** accept connection and put request to linked list */
 	while (!stop) {
 		request* req = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(request));
 		CHECK_MEM_ALLOCATION(req);
 		socket_addr* in_addr = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(socket_addr));
 		CHECK_MEM_ALLOCATION(in_addr);
-
+		
 		/** accepting connection */
 		int connection = accept_connection(socket_fd, in_addr);
 
@@ -60,26 +62,28 @@ int main(int argc, char** argv) {
 		
 		/** add request to the queue */
 		pthread_mutex_lock(&mutex);
-		queue_request(req);
+		queue_request(in_addr, req);
 		pthread_mutex_unlock(&mutex);
 
-		/** signal the thread */
+		/** signal the thread that there is a request to be processed*/
 		pthread_cond_signal(&condition_var);
 
-		/** free client address data */
-		free(in_addr);
-
+	
 		/** close connection to the cient */
 		close_connection(connection);
 	}
+
 	/** print cleaning up resource log */
 	print_log(stdout, "cleaning resource");
+
 	/** close thread */
 	close_thread();
 	/** free the queue */
 	free_queue();
 	/** close socket */
 	close_socket(socket_fd);
+	
+	
 	return 0;
 }
 
@@ -99,7 +103,7 @@ void close_thread() {
 }
 
 void* handle_request_loop(void* arg) {
-	while (!stop) {
+	while (1) {
 		/** get request from the queue */
 		pthread_mutex_lock(&mutex);
 		queue_node* req_node = deque_request();
