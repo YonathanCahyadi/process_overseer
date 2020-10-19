@@ -4,18 +4,21 @@
 #include "../global/data_structure.h"
 #include "../global/network.h"
 
-typedef struct queue_node_struct {
+typedef struct request_queue_node_struct {
     socket_addr *client_info;
     request* req;
-	struct queue_node_struct* next;
-} queue_node;
+	struct request_queue_node_struct* next;
+} request_queue_node;
+
 
 void queue_request(socket_addr* client_info, request* req) ;
 
-queue_node* deque_request();
+request_queue_node* deque_request();
 
-void free_queue_node(queue_node *node);
+void free_request_queue_node(request_queue_node *node);
 
-void free_queue();
+void free_request_queue();
+
+
 
 #endif /** LIB_OVERSEER_QUEUE_H_ */

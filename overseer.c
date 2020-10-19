@@ -11,6 +11,7 @@
 #include "./lib/overseer/logging.h"
 #include "./lib/overseer/queue.h"
 #include "./lib/overseer/utility.h"
+#include "./lib/overseer/executor.h"
 
 /** function prototype */
 void start_thread();
@@ -21,9 +22,17 @@ void signal_handler(int num);
 
 /** global variable */
 pthread_t request_thread_pool[MAX_THREAD_NUMBER];
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t req_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t handler_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condition_var = PTHREAD_COND_INITIALIZER;
+
+volatile int thread_loop_running = 1;
 volatile sig_atomic_t stop = 0;
+
+int socket_fd;
+int connection;
+request *req;
+socket_addr* in_addr;
 
 /** program main entry */
 int main(int argc, char** argv) {
@@ -34,7 +43,7 @@ int main(int argc, char** argv) {
 	get_port(argc, argv, &addr);
 
 	/** create socket */
-	int socket_fd = create_socket(addr, SERVER);
+	socket_fd = create_socket(addr, SERVER);
 
 	/** start thread */
 	start_thread();
@@ -42,17 +51,15 @@ int main(int argc, char** argv) {
 	/** set signal handler */
 	set_signal();
 
-	
-	
 	/** accept connection and put request to linked list */
 	while (!stop) {
-		request* req = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(request));
+		req = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(request));
 		CHECK_MEM_ALLOCATION(req);
-		socket_addr* in_addr = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(socket_addr));
+		in_addr = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(socket_addr));
 		CHECK_MEM_ALLOCATION(in_addr);
 		
 		/** accepting connection */
-		int connection = accept_connection(socket_fd, in_addr);
+		connection = accept_connection(socket_fd, in_addr);
 
 		/** give connection log */
 		print_log(stdout, "connection received from %s", in_addr->url);
@@ -61,32 +68,20 @@ int main(int argc, char** argv) {
 		recv_request(connection, req);
 		
 		/** add request to the queue */
-		pthread_mutex_lock(&mutex);
+		pthread_mutex_lock(&req_mutex);
 		queue_request(in_addr, req);
-		pthread_mutex_unlock(&mutex);
+		pthread_mutex_unlock(&req_mutex);
 
 		/** signal the thread that there is a request to be processed*/
 		pthread_cond_signal(&condition_var);
-
-	
-		/** close connection to the cient */
-		close_connection(connection);
 	}
-
-	/** print cleaning up resource log */
-	print_log(stdout, "cleaning resource");
-
-	/** close thread */
-	close_thread();
-	/** free the queue */
-	free_queue();
-	/** close socket */
-	close_socket(socket_fd);
 	
 	
+
 	return 0;
 }
 
+/** other function */
 void start_thread() {
 	/** set the thread attr */
 	pthread_attr_t attr;
@@ -98,27 +93,44 @@ void start_thread() {
 }
 
 void close_thread() {
+	/** stop the loop inside the thread routine */
+	pthread_mutex_lock(&handler_mutex);
+	thread_loop_running = 0;
+	pthread_mutex_unlock(&handler_mutex);
+	
+	/** wake every thread */
+	pthread_cond_broadcast(&condition_var);
+
 	for (int i = 0; i < MAX_THREAD_NUMBER; i++)
 		pthread_join(request_thread_pool[i], NULL);
 }
 
 void* handle_request_loop(void* arg) {
-	while (1) {
+	int running = 1;
+	while (running) {
 		/** get request from the queue */
-		pthread_mutex_lock(&mutex);
-		queue_node* req_node = deque_request();
+		pthread_mutex_lock(&req_mutex);
+		request_queue_node* req_node = deque_request();
 		if (!req_node) { /** there is no request */
-			pthread_cond_wait(&condition_var, &mutex);
+			pthread_cond_wait(&condition_var, &req_mutex);
 			req_node = deque_request();
 		}
-		pthread_mutex_unlock(&mutex);
+		pthread_mutex_unlock(&req_mutex);
+
 
 		if (req_node) { /** there is request */
 			/** process request */
 			process_request(*req_node->req);
 			/** free request node */
-			free_queue_node(req_node);
+			free_request_queue_node(req_node);
 		}
+
+
+		/** check if thread should running */
+		pthread_mutex_lock(&handler_mutex);
+		if(!thread_loop_running) running = 0;
+		pthread_mutex_unlock(&handler_mutex);
+
 	}
 
 	return NULL;
@@ -135,6 +147,32 @@ void set_signal() {
 }
 
 void signal_handler(int num) {
-	stop = 1;
-	print_log(stdout, "SIGINT recieved");
+	if(num == SIGINT){
+		print_log(stdout, "SIGINT recieved");
+		
+		/** stop the loop in main */
+		stop = 1;
+		
+		print_log(stdout, "Cleaning Resources");
+
+		/** free unused allocated req and address holder */
+		free(req);
+		free(in_addr);
+
+		/** close thread */
+		close_thread();
+
+		/** free the request queue */
+		free_request_queue();
+
+		/** kill all child */
+		kill_all_child();
+
+		/** close connection to the cient */
+		close_connection(connection);
+
+		/** close socket */
+		close_socket(socket_fd);
+		
+	}
 }

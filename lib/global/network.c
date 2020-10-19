@@ -8,6 +8,7 @@
 #include <string.h>
 #include <sys/socket.h>
 #include <sys/types.h>
+#include <unistd.h>
 
 #include "macro.h"
 
@@ -99,8 +100,10 @@ int accept_connection(int socket_fd, socket_addr *in_addr) {
 
 void close_connection(int connection_fd) {
 	shutdown(connection_fd, SHUT_RDWR);
+	close(connection_fd);
 }
 
 void close_socket(int socket_fd) {
 	shutdown(socket_fd, SHUT_RDWR);
+	close(socket_fd);
 }

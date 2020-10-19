@@ -14,6 +14,8 @@ void get_port(int argc, char** argv, socket_addr* addr);
 
 void recv_request(int connection, request* req);
 
+void create_dir(char* file_path);
+
 void process_request(request req);
 
 #endif /** LIB_OVERSEER_UTILITY_H_ */

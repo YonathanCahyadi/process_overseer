@@ -4,7 +4,7 @@ CURRENT_DIR = $(shell pwd)
 CONTROLER_LIB_PATH=$(CURRENT_DIR)/lib/controler/utility.h $(CURRENT_DIR)/lib/controler/utility.c $(CURRENT_DIR)/lib/global/data_structure.h $(CURRENT_DIR)/lib/global/data_structure.c  $(CURRENT_DIR)/lib/global/macro.h $(CURRENT_DIR)/lib/global/macro.c  $(CURRENT_DIR)/lib/global/network.h $(CURRENT_DIR)/lib/global/network.c
 CONTORLER_SRC_FILE=$(CURRENT_DIR)/controler.c
 CONTORLER_OUT_FILE=$(CURRENT_DIR)/controler.out
-OVERSEER_LIB_PATH=$(CURRENT_DIR)/overseer.h $(CURRENT_DIR)/lib/overseer/utility.h $(CURRENT_DIR)/lib/overseer/utility.c $(CURRENT_DIR)/lib/overseer/queue.h $(CURRENT_DIR)/lib/overseer/queue.c $(CURRENT_DIR)/lib/overseer/logging.h $(CURRENT_DIR)/lib/overseer/logging.c $(CURRENT_DIR)/lib/global/data_structure.h $(CURRENT_DIR)/lib/global/data_structure.c  $(CURRENT_DIR)/lib/global/macro.h $(CURRENT_DIR)/lib/global/macro.c  $(CURRENT_DIR)/lib/global/network.h $(CURRENT_DIR)/lib/global/network.c 
+OVERSEER_LIB_PATH=$(CURRENT_DIR)/overseer.h $(CURRENT_DIR)/lib/overseer/executor.h $(CURRENT_DIR)/lib/overseer/executor.c $(CURRENT_DIR)/lib/overseer/utility.h $(CURRENT_DIR)/lib/overseer/utility.c $(CURRENT_DIR)/lib/overseer/queue.h $(CURRENT_DIR)/lib/overseer/queue.c $(CURRENT_DIR)/lib/overseer/logging.h $(CURRENT_DIR)/lib/overseer/logging.c $(CURRENT_DIR)/lib/global/data_structure.h $(CURRENT_DIR)/lib/global/data_structure.c  $(CURRENT_DIR)/lib/global/macro.h $(CURRENT_DIR)/lib/global/macro.c  $(CURRENT_DIR)/lib/global/network.h $(CURRENT_DIR)/lib/global/network.c 
 OVERSEER_SRC_FILE=$(CURRENT_DIR)/overseer.c
 OVERSEER_OUT_FILE=$(CURRENT_DIR)/overseer.out
 

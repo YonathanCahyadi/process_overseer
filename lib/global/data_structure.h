@@ -24,6 +24,13 @@ typedef struct request_struct {
 	char arguments[PATH_MAX];
 } request;
 
+typedef struct process_struct{
+	int pid;
+	
+} process;
+
+
+
 void init_request(request *req);
 
 void print_request(request req);
