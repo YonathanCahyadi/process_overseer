@@ -150,7 +150,7 @@ void request_exec(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 
 			/** remove child PID in the process pool */
 			pthread_mutex_lock(&pro_mutex);
-			
+			// deque_process(pid);
 			pthread_mutex_unlock(&pro_mutex);
 			
 
@@ -172,10 +172,12 @@ void request_exec(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 void kill_all_child(pthread_mutex_t pro_mutex){
 	pthread_mutex_lock(&pro_mutex);
 	process_queue_node* tmp = get_process_queue_head();
+	int i = 0;
 	if(tmp != NULL){
 		for(;tmp != NULL; tmp = tmp->next){
 			if(tmp == NULL) break;
 			kill(tmp->pid, SIGKILL);
+			i++;
 		}
 	}
 	pthread_mutex_unlock(&pro_mutex);

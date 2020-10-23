@@ -159,10 +159,9 @@ void* mem_usage_updater(void *arg){
 	while(running){
 		pthread_mutex_lock(&process_mutex);
 		update_process_queue();
+		// print_process_queue();
 		pthread_mutex_unlock(&process_mutex);
 		sleep(1);
-
-
 		pthread_mutex_lock(&handler_mutex);
 		if(!thread_loop_running) running = 0;
 		pthread_mutex_unlock(&handler_mutex);

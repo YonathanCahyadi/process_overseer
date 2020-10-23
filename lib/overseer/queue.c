@@ -15,14 +15,15 @@
 #include "../global/data_structure.h"
 #include "../global/network.h"
 #include "../global/macro.h"
+#include "proc.h"
 
 static int num_of_queued_request = 0;
-static request_queue_node* request_head;
-static request_queue_node* request_tail;
+static request_queue_node* request_head = NULL;
+static request_queue_node* request_tail = NULL;
 
 static int num_of_active_process = 0;
-static process_queue_node* process_head;
-static process_queue_node* process_tail;
+static process_queue_node* process_head = NULL;
+static process_queue_node* process_tail = NULL;
 
 void queue_request(socket_addr* client_info, request* req) {
 	/** create new quest node */
@@ -81,7 +82,6 @@ void free_request_queue_node(request_queue_node *node){
 
 void free_request_queue(){
     request_queue_node* tmp;
-
    while (request_head != NULL){
        tmp = request_head;
        request_head = request_head->next;
@@ -89,141 +89,6 @@ void free_request_queue(){
        num_of_queued_request--;
     }
 }
-
-
-
-
-void spliter(char* buf, 
-            unsigned long *addr_start, 
-            unsigned long *end_addr, 
-            char permision[8], 
-            unsigned long *offset, 
-            char dev[10], 
-            int *inode, 
-            char path_name[PATH_MAX]){
-    int i = 0;
-    int ori = 0;
-
-    /** get the start and end addr */
-    char s_addr_tmp[20];
-    char e_addr_tmp[20];
-
-
-    /** the start addr */
-    while(buf[i] != '-'){ /** store the start addr */
-        s_addr_tmp[i - ori] = buf[i];
-        i++;
-    }
-    s_addr_tmp[i] = '\0';
-
-
-    /** the end addr */
-    while(buf[i] == '-') i++; /** adjust the index */
-    ori = i;
-
-    while(buf[i] != '\t' && buf[i] != ' '){ /** store the end addr */
-        e_addr_tmp[i - ori] = buf[i];
-        i++;
-    }
-    e_addr_tmp[i - ori] = '\0';
-
-
-    /** permision */
-    char perm_tmp[8];
-    while(buf[i] == '\t' || buf[i] == ' ') i++; /** adjust the index position */
-    ori = i;
-
-    while(buf[i] != '\t' && buf[i] != ' '){ /** store the permision */
-        perm_tmp[i - ori] = buf[i];
-        i++;
-    }
-    perm_tmp[i - ori] = '\0';
-
-
-    /** offset */
-    char offset_tmp[20];
-    while(buf[i] == '\t' || buf[i] == ' ') i++; /** adjust the index position */
-    ori = i;
-
-    while(buf[i] != '\t' && buf[i] != ' '){ /** store the offset */
-        offset_tmp[i - ori] = buf[i];
-        i++;
-    }
-    offset_tmp[i - ori] = '\0';
-
-    /** device */
-    char dev_tmp[10];
-    while(buf[i] == '\t' || buf[i] == ' ') i++; /** adjust the index position */
-    ori = i;
-
-    while(buf[i] != '\t' && buf[i] != ' '){ /** store the device  */
-        dev_tmp[i - ori] = buf[i];
-        i++;
-    }
-    dev_tmp[i - ori] = '\0';
-
-
-  
-    /** inode */
-    char inode_tmp[30];
-    while(buf[i] == '\t' || buf[i] == ' ') i++; /** adjust the index position */
-    ori = i;
-
-    while(buf[i] != '\t' && buf[i] != ' '){ /** store the inode */
-        inode_tmp[i - ori] = buf[i];
-        i++;
-    }
-    inode_tmp[i - ori] = '\0';
-
-    /** path name */
-    char pathname_tmp[PATH_MAX];
-    while(buf[i] == '\t' || buf[i] == ' ') i++; /** adjust the index position */
-    ori = i;
-
-    while(buf[i] != '\t' && buf[i] != ' '){ /** store the pathname */
-        pathname_tmp[i - ori] = buf[i];
-        i++;
-    }
-    pathname_tmp[i - ori] = '\0';
-
-    /** store the val in the given param */
-    *addr_start = strtoul(s_addr_tmp, NULL, DEAFULT_HEX_BASE);
-    *end_addr = strtoul(e_addr_tmp, NULL, DEAFULT_HEX_BASE);
-    strncpy(permision, perm_tmp, 8);
-    *offset = strtoul(offset_tmp, NULL, DEAFULT_HEX_BASE);
-    strncpy(dev, dev_tmp, 10);
-    *inode = atoi(inode_tmp);
-    strncpy(path_name, pathname_tmp, PATH_MAX);
-}
-
-unsigned long mem_usage(int pid){
-    /** open the proc/[pid]/maps file */
-    char maps_path[500];
-    sprintf(maps_path, DEFAULT_PROC_MAPS_PATH, pid);
-    FILE* file = fopen(maps_path, "r");
-   
-    unsigned long used_mem = 0ul;
-    
-    if(file){ /** if file exist */
-        char buf[LINE_MAX_LENGTH];
-        while(!feof(file)){
-            fgets(buf, LINE_MAX_LENGTH, file);
-            // printf("%s", buf);
-            unsigned long addr_start, addr_end, offset;
-            int inode;
-            char perm[8], dev[10], pathname[PATH_MAX];
-            spliter(buf, &addr_start, &addr_end, perm, &offset, dev, &inode, pathname);
-
-            /** calculate the used mem with inode 0 */
-            if(inode == 0){
-                used_mem += (addr_end - addr_start);
-            }
-        }
-        fclose(file);
-    }
-    return used_mem;
-}
-
 
 process_queue_node* get_process_queue_head(){
     return process_head;
@@ -254,7 +119,7 @@ void add_record(int pid, process_records *head){
     if(head->next == NULL){ /** check if record only have 1  */
         head->next = new_node;
     }else{
-        /** got to the last node */
+        /** go to the last node */
         process_records *tmp = head;
         for(; tmp->next != NULL; tmp = tmp->next);
         tmp->next = new_node; /** add new record to the last node */
@@ -267,6 +132,26 @@ process_records* get_last_record(process_records *head){
 	for(;tmp_record->next != NULL; tmp_record = tmp_record->next);
     return tmp_record;
 }
+
+void free_process_record(process_records *head){
+    for(;head != NULL; head = head->next){
+        if(head == NULL) break;
+        free(head);
+    }
+}
+
+void free_process_queue(){
+    process_queue_node* tmp;
+    while (process_head != NULL){
+       tmp = process_head;
+       process_head = process_head->next;
+       free_process_record(tmp->records);
+       free(tmp);
+       num_of_active_process--;
+    }
+
+}
+
 
 void print_record(process_records *head){
     process_records *tmp = head;
@@ -284,7 +169,6 @@ process_records* get_last(process_records* head){
 
     return tmp;
 }
-
 
 void queue_process(int pid, char* arguments){
     /** create new node */
@@ -328,24 +212,6 @@ void queue_process(int pid, char* arguments){
  
 }
 
-process_queue_node* deque_process(){
-    process_queue_node* retval = NULL;
-
-    /** if there is something on the linked list */
-    if(num_of_active_process > 0){
-        retval = process_head;
-        process_head = process_head->next;
-
-        /** if the node was last of the list */
-        if(process_head == NULL) process_tail = NULL;
-
-        /** decrease the num of item stored in the linked list */
-        num_of_active_process--;
-    }
-
-
-    return retval;
-}
 
 void update_process_queue(){
     /** update the record */
@@ -360,24 +226,15 @@ void update_process_queue(){
     }
 }
 
+void print_process_queue(){
+    process_queue_node *tmp = process_head;
 
-void free_process_record(process_records *head){
-    for(;head != NULL; head = head->next){
-        if(head == NULL) break;
-        free(head);
+    int i = 0;
+    for(; tmp->next != NULL; tmp = tmp->next){
+        printf("%d -> %d\n", tmp->pid, i);
+        i++;
     }
+    printf("Total active process: %d\n", num_of_active_process);
 }
 
-void free_process_queue(){
-    process_queue_node* tmp;
-
-    while (process_head != NULL){
-       tmp = process_head;
-       process_head = process_head->next;
-       free_process_record(tmp->records);
-       free(tmp);
-       num_of_active_process--;
-    }
-
-}
 

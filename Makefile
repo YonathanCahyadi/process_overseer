@@ -33,12 +33,12 @@ $(CONTROLER_SRC_OBJ): controler.c
 	$(CC) -c controler.c -o $@
 
 $(CONTROLER_OUT): $(CONTROLER_SRC_OBJ) $(CONTROLER_LIB_DEP)
-	$(CC) -Wall -o $@ $(CONTROLER_SRC_OBJ) $(CONTROLER_LIB_DEP)
+	$(CC) -g -Wall -o $@ $(CONTROLER_SRC_OBJ) $(CONTROLER_LIB_DEP)
 
 
 #--------------------------------------- OVERSEER ---------------------------------------#
 OVERSEER_LIB_PATH= $(CURRENT_DIR)/lib/overseer/
-OVERSEER_OBJ= $(OVERSEER_LIB_PATH)logging.o $(OVERSEER_LIB_PATH)utility.o $(OVERSEER_LIB_PATH)queue.o $(OVERSEER_LIB_PATH)executor.o
+OVERSEER_OBJ= $(OVERSEER_LIB_PATH)logging.o $(OVERSEER_LIB_PATH)utility.o $(OVERSEER_LIB_PATH)queue.o $(OVERSEER_LIB_PATH)executor.o $(OVERSEER_LIB_PATH)proc.o
 OVERSEER_OUT= overseer.out
 OVERSEER_SRC_OBJ= overseer.o
 OVERSEER_LIB_DEP= $(GLOBAL_OBJ) $(OVERSEER_OBJ)
@@ -55,11 +55,14 @@ $(OVERSEER_LIB_PATH)queue.o: $(OVERSEER_LIB_PATH)queue.h $(OVERSEER_LIB_PATH)que
 $(OVERSEER_LIB_PATH)executor.o: $(OVERSEER_LIB_PATH)executor.h $(OVERSEER_LIB_PATH)executor.c
 	$(CC) -c $(OVERSEER_LIB_PATH)executor.c -o $@
 
+$(OVERSEER_LIB_PATH)proc.o: $(OVERSEER_LIB_PATH)proc.h $(OVERSEER_LIB_PATH)proc.c
+	$(CC) -c $(OVERSEER_LIB_PATH)proc.c -o $@
+
 $(OVERSEER_SRC_OBJ): overseer.h overseer.c
 	$(CC) -c overseer.c -o $@
 
 $(OVERSEER_OUT): $(OVERSEER_SRC_OBJ) $(OVERSEER_LIB_DEP)
-	$(CC) -Wall -pthread -o $@ $(OVERSEER_SRC_OBJ) $(OVERSEER_LIB_DEP)
+	$(CC) -g -Wall -pthread -o $@ $(OVERSEER_SRC_OBJ) $(OVERSEER_LIB_DEP)
 
 
 

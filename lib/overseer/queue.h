@@ -6,10 +6,9 @@
 #include "../global/data_structure.h"
 #include "../global/network.h"
 
-#define LINE_MAX_LENGTH  (PATH_MAX + 100)
+
 #define DEFAULT_TIME_LENGTH 26
-#define DEFAULT_PROC_MAPS_PATH "/proc/%d/maps"
-#define DEAFULT_HEX_BASE 16
+
 
 typedef struct request_queue_node_struct {
     socket_addr *client_info;
@@ -36,6 +35,7 @@ void queue_request(socket_addr* client_info, request* req) ;
 
 request_queue_node* deque_request();
 
+
 void free_request_queue_node(request_queue_node *node);
 
 void free_request_queue();
@@ -49,5 +49,7 @@ void update_process_queue();
 void free_process_queue();
 
 process_queue_node* get_process_queue_head();
+
+void print_process_queue();
 
 #endif /** LIB_OVERSEER_QUEUE_H_ */
