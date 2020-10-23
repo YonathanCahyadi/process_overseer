@@ -1,153 +1,59 @@
-2020-10-23 20:08:32 - attempting to execute ./testing/test_exec 14 
-2020-10-23 08:54:08 - ./testing/test_exec 10  has been executed with pid 2365
-2020-10-23 08:54:08 - 2365 has terminated with status code 0
-Thread updater
-Thread updater
-Thread updater
-Thread updater
-Thread updater
-Thread updater
-Thread updater
-Thread updater
-2020-10-23 08:54:19 - connection received from 127.0.0.1
-Thread updater
-Thread updater
-Thread updater
-Thread updater
-Thread updater
+2020-10-24 01:19:31 - attempting to execute ./testing/test_exec 14 
+2020-10-24 01:19:13 - ./testing/test_exec 10  has been executed with pid 21299
+2020-10-24 01:19:13 - 21299 has terminated with status code 0
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - attempting to execute ./testing/test_exec 1 
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - attempting to execute ./testing/test_exec 2 
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - attempting to execute ./testing/test_exec 3 
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - attempting to execute ./testing/test_exec 4 
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - attempting to execute ./testing/test_exec 5 
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:19 - connection received from 127.0.0.1
+2020-10-24 01:19:20 - ./testing/test_exec 1  has been executed with pid 21316
+2020-10-24 01:19:20 - 21316 has terminated with status code 0
+2020-10-24 01:19:20 - attempting to execute ./testing/test_exec 6 
+HI from 1
+2020-10-24 01:19:20 - ./testing/test_exec 2  has been executed with pid 21318
+2020-10-24 01:19:20 - 21318 has terminated with status code 0
+2020-10-24 01:19:20 - attempting to execute ./testing/test_exec 7 
+2020-10-24 01:19:20 - ./testing/test_exec 3  has been executed with pid 21321
+2020-10-24 01:19:20 - 21321 has terminated with status code 0
+2020-10-24 01:19:20 - attempting to execute ./testing/test_exec 8 
+2020-10-24 01:19:20 - ./testing/test_exec 4  has been executed with pid 21322
+2020-10-24 01:19:20 - 21322 has terminated with status code 0
+2020-10-24 01:19:20 - attempting to execute ./testing/test_exec 9 
+2020-10-24 01:19:20 - ./testing/test_exec 5  has been executed with pid 21324
+2020-10-24 01:19:20 - 21324 has terminated with status code 0
+2020-10-24 01:19:20 - attempting to execute ./testing/test_exec 10 
+2020-10-24 01:19:21 - ./testing/test_exec 6  has been executed with pid 21341
+2020-10-24 01:19:21 - 21341 has terminated with status code 0
+HI from 2
+HI from 3
+HI from 4
+2020-10-24 01:19:23 - ./testing/test_exec 17  has been executed with pid 21352
+2020-10-24 01:19:23 - 21352 has terminated with status code 0
+HI from 5
 HI from 15
-Thread updater
-Thread updater
-Thread updater
-Thread updater
-2020-10-23 08:54:27 - SIGINT recieved
-2020-10-23 08:54:27 - Cleaning Resources
+HI from 11
 r
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-HI from 15
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 8425472
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
-16366. mem usage -> 4096
-Thread updater
 16366. mem usage -> 4096
 Thread updater
 16366. mem usage -> 4096

@@ -1,8 +1,7 @@
-2020-10-23 20:08:32 - attempting to execute ./testing/test_exec 15 
-2020-10-23 20:08:33 - SIGINT recieved
-2020-10-23 20:08:33 - Cleaning Resources
-2020-10-23 20:08:33 - 9006 has terminated with status code 0
-status code 0
+2020-10-24 01:19:31 - attempting to execute ./testing/test_exec 15 
+2020-10-24 01:19:32 - ./testing/test_exec 11  has been executed with pid 21392
+2020-10-24 01:19:32 - 21392 has terminated with status code 0
+tatus code 0
 
 16356. mem usage -> 8425472
 16357. mem usage -> 8425472

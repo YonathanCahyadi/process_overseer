@@ -1,10 +1,61 @@
-2020-10-23 20:08:32 - attempting to execute ./testing/test_exec 13 
-2020-10-23 20:08:40 - SIGINT recieved
-2020-10-23 20:08:40 - Cleaning Resources
-2020-10-23 20:08:43 - SIGINT recieved
-2020-10-23 20:08:43 - Cleaning Resources
-- ./testing/test_exec 20  has been executed with pid 2375
-2020-10-23 08:54:10 - 2375 has terminated with status code 0
+2020-10-24 01:19:31 - attempting to execute ./testing/test_exec 13 
+2020-10-24 01:19:31 - ./testing/test_exec 10  has been executed with pid 21391
+2020-10-24 01:19:31 - 21391 has terminated with status code 0
+2020-10-24 01:19:34 - SIGINT recieved
+2020-10-24 01:19:34 - Cleaning Resources
+failed to accept incomming connection!
+ed with status code 0
 HI from 14
- 14
-0:38:15 - 11186 has terminated with status code 0
+01:19:22 - ./testing/test_exec 15  has been executed with pid 21350
+2020-10-24 01:19:22 - 21350 has terminated with status code 0
+2020-10-24 01:19:23 - ./testing/test_exec 20  has been executed with pid 21355
+2020-10-24 01:19:23 - 21355 has terminated with status code 0
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - attempting to execute ./testing/test_exec 1 
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - attempting to execute ./testing/test_exec 2 
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - attempting to execute ./testing/test_exec 3 
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - attempting to execute ./testing/test_exec 4 
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - attempting to execute ./testing/test_exec 5 
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-24 01:19:30 - ./testing/test_exec 1  has been executed with pid 21362
+2020-10-24 01:19:30 - 21362 has terminated with status code 0
+2020-10-24 01:19:30 - attempting to execute ./testing/test_exec 6 
+HI from 1
+2020-10-24 01:19:30 - ./testing/test_exec 2  has been executed with pid 21364
+2020-10-24 01:19:30 - 21364 has terminated with status code 0
+2020-10-24 01:19:30 - attempting to execute ./testing/test_exec 7 
+2020-10-24 01:19:30 - ./testing/test_exec 3  has been executed with pid 21366
+2020-10-24 01:19:30 - 21366 has terminated with status code 0
+2020-10-24 01:19:30 - attempting to execute ./testing/test_exec 8 
+2020-10-24 01:19:30 - ./testing/test_exec 4  has been executed with pid 21368
+2020-10-24 01:19:30 - 21368 has terminated with status code 0
+2020-10-24 01:19:30 - attempting to execute ./testing/test_exec 9 
+2020-10-24 01:19:30 - ./testing/test_exec 5  has been executed with pid 21370
+2020-10-24 01:19:30 - 21370 has terminated with status code 0
+2020-10-24 01:19:30 - attempting to execute ./testing/test_exec 10 
+2020-10-24 01:19:31 - ./testing/test_exec 6  has been executed with pid 21387
+2020-10-24 01:19:31 - 21387 has terminated with status code 0
+HI from 2
+HI from 3
+HI from 4
+2020-10-24 01:19:33 - ./testing/test_exec 17  has been executed with pid 21398
+2020-10-24 01:19:33 - 21398 has terminated with status code 0
