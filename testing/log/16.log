@@ -1,0 +1,4 @@
+2020-10-23 08:54:09 - attempting to execute ./testing/test_exec 16 
+2020-10-23 08:54:09 - ./testing/test_exec 12  has been executed with pid 2367
+2020-10-23 08:54:09 - 2367 has terminated with status code 0
+0

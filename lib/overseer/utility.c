@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/socket.h>
+#include <pthread.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <unistd.h>
@@ -16,6 +17,7 @@
 #include "../global/network.h"
 #include "logging.h"
 #include "executor.h"
+#include "queue.h"
 
 void usage() {
 	fprintf(stderr, "%s\n", "error: usage <port>");
@@ -76,9 +78,21 @@ void create_dir(char* file_path) {
 	}
 }
 
-void process_request(request req) {
-	/** check if request got an arguments to execute */
-	if (req.arguments_flag) {
-		request_exec(req);
+
+void process_request(request_queue_node request, pthread_mutex_t pro_mutex) {
+	
+	/** process mem request */
+	if(request.req->mem_flag){
+		process_mem_req(request, pro_mutex);
 	}
+	/** process memkill request */
+	if(request.req->memkill_flag){
+		process_memkill_req(request, pro_mutex);
+	}
+
+	/** check if request got an arguments to execute */
+	if (request.req->arguments_flag) {
+		request_exec(request, pro_mutex);
+	}
+	
 }

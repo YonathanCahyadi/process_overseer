@@ -91,9 +91,10 @@ int accept_connection(int socket_fd, socket_addr *in_addr) {
 	CLEAR_CHAR_BUFFER(ip, INET_ADDRSTRLEN);
    
 	inet_ntop(AF_INET, &client.sin_addr, ip, INET_ADDRSTRLEN);
-	/** store connection ip addr and port */
+	/** store connection ip addr, port and the connection_fd */
 	strncpy(in_addr->url, ip, INET_ADDRSTRLEN);
 	in_addr->port = (int)ntohs(client.sin_port);
+	in_addr->connection_fd = client_fd;
 
 	return client_fd;
 }

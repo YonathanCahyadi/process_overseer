@@ -1,0 +1,10 @@
+2020-10-23 20:08:32 - attempting to execute ./testing/test_exec 13 
+2020-10-23 20:08:40 - SIGINT recieved
+2020-10-23 20:08:40 - Cleaning Resources
+2020-10-23 20:08:43 - SIGINT recieved
+2020-10-23 20:08:43 - Cleaning Resources
+- ./testing/test_exec 20  has been executed with pid 2375
+2020-10-23 08:54:10 - 2375 has terminated with status code 0
+HI from 14
+ 14
+0:38:15 - 11186 has terminated with status code 0

@@ -1,0 +1,6 @@
+2020-10-23 08:54:09 - attempting to execute ./testing/test_exec 20 
+Thread updater
+2020-10-23 08:54:10 - ./testing/test_exec 16  has been executed with pid 2371
+2020-10-23 08:54:10 - 2371 has terminated with status code 0
+terminated with status code 0
+with status code 0

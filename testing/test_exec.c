@@ -3,7 +3,7 @@
 #include <stdlib.h>
 
 int main(int argc, char** argv){
-	sleep(2);
+	sleep(atoi(argv[1]));
 	printf("HI from %d\n", atoi(argv[1]));
 	return 0;
 }

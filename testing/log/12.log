@@ -1,0 +1,7 @@
+2020-10-23 20:08:32 - attempting to execute ./testing/test_exec 12 
+2020-10-23 20:08:32 - ./testing/test_exec 9  has been executed with pid 9002
+2020-10-23 20:08:32 - 9002 has terminated with status code 0
+2020-10-23 20:08:32 - ./testing/test_exec 8  has been executed with pid 9001
+2020-10-23 20:08:32 - 9001 has terminated with status code 0
+2020-10-23 20:08:32 - ./testing/test_exec 10  has been executed with pid 9003
+2020-10-23 20:08:33 - 9007 has terminated with status code 0

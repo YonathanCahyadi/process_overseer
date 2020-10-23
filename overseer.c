@@ -5,25 +5,29 @@
 #include <signal.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
-#include "./lib/global/macro.h"
-#include "./lib/global/network.h"
-#include "./lib/overseer/logging.h"
-#include "./lib/overseer/queue.h"
-#include "./lib/overseer/utility.h"
-#include "./lib/overseer/executor.h"
+#include "lib/global/macro.h"
+#include "lib/global/network.h"
+#include "lib/overseer/logging.h"
+#include "lib/overseer/queue.h"
+#include "lib/overseer/utility.h"
+#include "lib/overseer/executor.h"
 
 /** function prototype */
 void start_thread();
 void close_thread();
 void* handle_request_loop(void* arg);
+void* mem_usage_updater(void *arg);
 void set_signal();
 void signal_handler(int num);
 
 /** global variable */
 pthread_t request_thread_pool[MAX_THREAD_NUMBER];
+pthread_t updater_thread_id;
 pthread_mutex_t req_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_mutex_t handler_mutex = PTHREAD_MUTEX_INITIALIZER;
+pthread_mutex_t process_mutex = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t condition_var = PTHREAD_COND_INITIALIZER;
 
 volatile int thread_loop_running = 1;
@@ -59,13 +63,13 @@ int main(int argc, char** argv) {
 		CHECK_MEM_ALLOCATION(in_addr);
 		
 		/** accepting connection */
-		connection = accept_connection(socket_fd, in_addr);
+		accept_connection(socket_fd, in_addr);
 
 		/** give connection log */
 		print_log(stdout, "connection received from %s", in_addr->url);
 
 		/** recive request */
-		recv_request(connection, req);
+		recv_request(in_addr->connection_fd, req);
 		
 		/** add request to the queue */
 		pthread_mutex_lock(&req_mutex);
@@ -77,9 +81,10 @@ int main(int argc, char** argv) {
 	}
 	
 	
-
 	return 0;
 }
+
+
 
 /** other function */
 void start_thread() {
@@ -87,9 +92,14 @@ void start_thread() {
 	pthread_attr_t attr;
 	pthread_attr_init(&attr);
 
-	/** start the thread */
-	for (int i = 0; i < MAX_THREAD_NUMBER; i++)
+	/** start the thread for handling request */
+	for (int i = 0; i < MAX_THREAD_NUMBER; i++){
+		
 		pthread_create(&request_thread_pool[i], &attr, handle_request_loop, NULL);
+	}
+
+	/** start the thread for updating child proecess memory usage */
+	pthread_create(&updater_thread_id, &attr, mem_usage_updater, NULL);
 }
 
 void close_thread() {
@@ -101,8 +111,13 @@ void close_thread() {
 	/** wake every thread */
 	pthread_cond_broadcast(&condition_var);
 
-	for (int i = 0; i < MAX_THREAD_NUMBER; i++)
+	/** close request handler thread */
+	for (int i = 0; i < MAX_THREAD_NUMBER; i++){
 		pthread_join(request_thread_pool[i], NULL);
+	}
+
+	/** close updater thread */
+	pthread_join(updater_thread_id, NULL);
 }
 
 void* handle_request_loop(void* arg) {
@@ -120,7 +135,9 @@ void* handle_request_loop(void* arg) {
 
 		if (req_node) { /** there is request */
 			/** process request */
-			process_request(*req_node->req);
+			process_request(*req_node, process_mutex);
+			/** close connection to the client */
+			close_connection(req_node->client_info->connection_fd);
 			/** free request node */
 			free_request_queue_node(req_node);
 		}
@@ -133,6 +150,26 @@ void* handle_request_loop(void* arg) {
 
 	}
 
+	return NULL;
+}
+
+void* mem_usage_updater(void *arg){
+	
+	int running = 1;
+	while(running){
+		pthread_mutex_lock(&process_mutex);
+		update_process_queue();
+		pthread_mutex_unlock(&process_mutex);
+		sleep(1);
+
+
+		pthread_mutex_lock(&handler_mutex);
+		if(!thread_loop_running) running = 0;
+		pthread_mutex_unlock(&handler_mutex);
+	}
+
+	
+	
 	return NULL;
 }
 
@@ -159,17 +196,17 @@ void signal_handler(int num) {
 		free(req);
 		free(in_addr);
 
+		/** kill all child */
+		kill_all_child(process_mutex);
+
 		/** close thread */
 		close_thread();
 
 		/** free the request queue */
 		free_request_queue();
 
-		/** kill all child */
-		kill_all_child();
-
-		/** close connection to the cient */
-		close_connection(connection);
+		/** free the process queue */
+		free_process_queue();
 
 		/** close socket */
 		close_socket(socket_fd);

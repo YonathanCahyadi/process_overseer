@@ -24,7 +24,7 @@ void CHECK_IF_NULL(void* ptr, char* err_msg) {
 void SIZE_CHECK(int nbyte, int expected_size, char* err_msg) {
 	if (nbyte != expected_size) {
 		fprintf(stderr, "%s\n", err_msg);
-		exit(1);
+		return;
 	}
 }
 
@@ -52,16 +52,23 @@ int CHECK(int i, char* err_msg_format, ...) {
 	return i;
 }
 
-int IS_INTERGER(char* str) {
+int IS_FLOAT(const char *str){
+    int len;
+    float dummy = 0.0;
+    if (sscanf(str, "%f %n", &dummy, &len) == 1 && len == (int)strlen(str))
+        return 1; /** a valid float */
+    else
+        return 0; /** an invalid float */
+}
+
+int IS_INTERGER(const char* str) {
 	char buffer[MAX_BUFFER_DEFAULT];
 	CLEAR_CHAR_BUFFER(buffer, MAX_BUFFER_DEFAULT);
 	snprintf(buffer, MAX_BUFFER_DEFAULT, "%d", atoi(str));
 	return strcmp(buffer, str) == 0;
 }
 
-int IS_EQUALS(char* str1, char* str2){
-	return strncmp(str1, str2, strlen(str2) + 1) == 0;
-}
+
 
 void EXEC(int (*exec)(const char*, char* const*), char * const* argv, void (*callback)(FILE*, char*, ...), char *args){
 	

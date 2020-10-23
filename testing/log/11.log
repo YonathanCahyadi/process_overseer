@@ -1,0 +1,9 @@
+2020-10-23 20:08:32 - 9003 has terminated with status code 0
+2020-10-23 20:08:32 - attempting to execute ./testing/test_exec 11 
+2020-10-23 20:08:33 - 9008 has terminated with status code 0
+h status code 0
+2020-10-23 08:54:10 - ./testing/test_exec 18  has been executed with pid 2373
+2020-10-23 08:54:10 - 2373 has terminated with status code 0
+HI from 12
+ 12
+urces

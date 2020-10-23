@@ -20,7 +20,7 @@ void init_request(request *req) {
 	req->arguments_flag = OFF;
 	req->seconds = 0;
 	req->pid = 0;
-	req->percentage = 0;
+	req->percentage = 0.0f;
 }
 
 
@@ -38,7 +38,7 @@ void print_request(request req) {
 	printf("mem_flag: %d\n", req.mem_flag);
 	printf("pid: %d\n", req.pid);
 	printf("memkill_flag: %d\n", req.memkill_flag);
-	printf("percent: %d\n", req.percentage);
+	printf("percent: %f\n", req.percentage);
 	printf("arguments_flag: %d\n", req.arguments_flag);
     printf("arguments: %s\n", req.arguments);
 }

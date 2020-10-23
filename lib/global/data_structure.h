@@ -17,17 +17,12 @@ typedef struct request_struct {
 	int mem_flag;
 	int pid;
 	int memkill_flag;
-	int percentage;
+	float percentage;
 	int arguments_flag;
 	char out_file_path[PATH_MAX];
 	char log_file_path[PATH_MAX];
 	char arguments[PATH_MAX];
 } request;
-
-typedef struct process_struct{
-	int pid;
-	
-} process;
 
 
 

@@ -30,21 +30,21 @@ done
 
 
 echo -e "${Green}Execute with out option 5x${NC}"
-for i in {1..5}
+for i in {6..10}
 do
     echo -e "${PROGRAM} localhost 1234 -o './testing/output/${i}.log' ./testing/test ${i}"
     ${PROGRAM} localhost 1234 -o "./testing/output/${i}.log" ${TESTING_PROGRAM} ${i}
 done
 
 echo -e "${Green}Execute with log option 5x${NC}"
-for i in {6..10}
+for i in {11..15}
 do
     echo -e "${PROGRAM} localhost 1234 -log './testing/log/${i}.log' ./testing/test ${i}"
     ${PROGRAM} localhost 1234 -log "./testing/log/${i}.log" ${TESTING_PROGRAM} ${i}
 done
 
 echo -e "${Green}Execute with log and out option 5x${NC}"
-for i in {11..15}
+for i in {16..20}
 do
     echo -e "${PROGRAM} localhost 1234 -log './testing/log/${i}.log' -o './testing/output/${i}.log' ./test ${i}"
     ${PROGRAM} localhost 1234  -o "./testing/output/${i}.log" -log "./testing/log/${i}.log" ${TESTING_PROGRAM} ${i}
