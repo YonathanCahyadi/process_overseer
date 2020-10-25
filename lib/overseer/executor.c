@@ -255,6 +255,7 @@ void process_mem_req(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 
 	if (req_node.req->pid == -1) { /** return all running process and last recorded memory usage */
 		/** <pid> <bytes> <file> [arg...] */
+		
 		pthread_mutex_lock(&pro_mutex);
 		process_queue_node* tmp = get_process_queue_head();
 		if (tmp != NULL) {
@@ -272,14 +273,16 @@ void process_mem_req(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 				strcat(buf, mem_buf);
 
 				/** get the arg */
-				strcat(buf, req_node.req->arguments);
+				strcat(buf, tmp->arguments);
 				strcat(buf, "\n");
 			}
 		}
 		pthread_mutex_unlock(&pro_mutex);
 
 	} else { /** return all recorded memory usage of that specific pid */
+		
 		/** %Y-%m-%d %H:%M:%S <bytes> */
+
 		pthread_mutex_lock(&pro_mutex);
 		process_queue_node* tmp = get_process_queue_head();
 
@@ -291,16 +294,19 @@ void process_mem_req(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 		}
 
 		if (tmp != NULL) {
-			/** <pid> <bytes> <file> [arg...] */
+			
 			/** get all the usage  */
 			if (tmp->pid == req_node.req->pid) { /** process with specified pid exist */
 				process_records* tmp_record = tmp->records;
 				for (; tmp_record != NULL; tmp_record = tmp_record->next) {
+					/** append time */
 					strcat(buf, tmp_record->time);
 
+					/** append mem usage */
 					char mem_buf[100];
 					snprintf(mem_buf, 100, "\t%lu\n", tmp_record->mem_usage);
 					strcat(buf, mem_buf);
+
 				}
 			} else { /** process with specified pid doesn't exist */
 				strcat(buf, "process doesn't exist");

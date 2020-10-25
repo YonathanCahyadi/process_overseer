@@ -4,13 +4,15 @@ Fill the below for each section with C for complete and P for partially complete
 For example: A[C]
 
 A [C]
-B [P]
+B [C]
 C [C]
 D [C]
 E [C] 
 
 Comments:
     - log redirection still have some problem. It stuck 
+    - tested on Ubuntu 20.04
+    - tested on Windows WSL
 
 --------------------------------------------
 
