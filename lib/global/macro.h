@@ -10,6 +10,8 @@ void CHECK_MEM_ALLOCATION(void* ptr);
 
 int CHECK(int i, char* err_msg_format, ...);
 
+int CHECK2(int i, char* err_msg_format, ...);
+
 void CLEAR_CHAR_BUFFER(char* ptr, int len);
 
 void CHECK_IF_NULL(void* ptr, char* err_msg);

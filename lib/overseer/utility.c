@@ -13,17 +13,31 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+
 #include "../global/macro.h"
 #include "../global/network.h"
 #include "logging.h"
 #include "executor.h"
 #include "queue.h"
 
+/**
+ * @brief  Print the Usage message
+ * @note   
+ * @return None
+ */
 void usage() {
 	fprintf(stderr, "%s\n", "error: usage <port>");
 	exit(1);
 }
 
+/**
+ * @brief  get the port number from the argument and store it in addr
+ * @note   
+ * @param  argc: argument count
+ * @param  argv: argument vector
+ * @param  addr: variable to store the port number
+ * @return None
+ */
 void get_port(int argc, char** argv, socket_addr* addr) {
 	/** check user input */
 	if (argc != 2) {
@@ -37,16 +51,23 @@ void get_port(int argc, char** argv, socket_addr* addr) {
 	}
 }
 
+/**
+ * @brief  recieve incoming request from the controler and store the request in the req param
+ * @note   This function will recieve request from the controler in the form of JSON.
+ * 		   After recieving the JSON it will deserialize it into a request struct and store it in req 
+ * @param  connection: the connection number 
+ * @param  req: the variable to store the recieved request
+ * @return None
+ */
 void recv_request(int connection, request* req) {
 	char buffer[MAX_JSON_LEN];
 	CLEAR_CHAR_BUFFER(buffer, MAX_JSON_LEN);
 
 	/** recieve request */
-	int nbyte = CHECK(recv(connection, buffer, MAX_JSON_LEN, 0), "failed recieving request");
+	int nbyte = CHECK2(recv(connection, buffer, MAX_JSON_LEN, MSG_WAITALL), "failed recieving request (%s)", strerror(errno));
 	SIZE_CHECK(nbyte, MAX_JSON_LEN, "request data corrupted");
 
 	/** deserialize request */
-
 	CHECK(sscanf(buffer,
 	             REQUEST_DESERIALIZATION_FORMAT,
 	             &req->o_flag,
@@ -64,6 +85,12 @@ void recv_request(int connection, request* req) {
 	      "deserializing failed!");
 }
 
+/**
+ * @brief  Create a new directory if not exist
+ * @note   
+ * @param  file_path: the file path
+ * @return None
+ */
 void create_dir(char* file_path) {
 	/** split the file path into directory path and file name */
 	char file_path_cp[PATH_MAX];
@@ -78,7 +105,13 @@ void create_dir(char* file_path) {
 	}
 }
 
-
+/**
+ * @brief  Process the recieved request
+ * @note   This function will process the recieved request from the controler
+ * @param  request: the request
+ * @param  pro_mutex: the mutex related to process linked list
+ * @return None
+ */
 void process_request(request_queue_node request, pthread_mutex_t pro_mutex) {
 	
 	/** process mem request */

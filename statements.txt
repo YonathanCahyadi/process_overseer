@@ -10,7 +10,8 @@ D [C]
 E [C] 
 
 Comments:
-    - log redirection still have some problem
+    - log redirection still have some problem. It stuck 
+
 --------------------------------------------
 
 

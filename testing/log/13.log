@@ -1,16 +1,17 @@
-2020-10-24 01:19:31 - attempting to execute ./testing/test_exec 13 
-2020-10-24 01:19:31 - ./testing/test_exec 10  has been executed with pid 21391
-2020-10-24 01:19:31 - 21391 has terminated with status code 0
-2020-10-24 01:19:34 - SIGINT recieved
-2020-10-24 01:19:34 - Cleaning Resources
-failed to accept incomming connection!
-ed with status code 0
-HI from 14
-01:19:22 - ./testing/test_exec 15  has been executed with pid 21350
-2020-10-24 01:19:22 - 21350 has terminated with status code 0
-2020-10-24 01:19:23 - ./testing/test_exec 20  has been executed with pid 21355
-2020-10-24 01:19:23 - 21355 has terminated with status code 0
-2020-10-24 01:19:29 - connection received from 127.0.0.1
+2020-10-25 05:12:09 - attempting to execute ./testing/test_exec 13 
+2020-10-25 05:12:10 - ./testing/test_exec 11  has been executed with pid 4707
+2020-10-25 05:12:10 - ./testing/test_exec 12  has been executed with pid 4708
+2020-10-25 05:12:10 - ./testing/test_exec 13  has been executed with pid 4709
+2020-10-25 05:12:14 - SIGINT recieved
+2020-10-25 05:12:14 - Cleaning Resources
+2020-10-25 05:12:15 - SIGINT recieved
+2020-10-25 05:12:15 - Cleaning Resources
+2020-10-25 05:12:16 - SIGINT recieved
+2020-10-25 05:12:16 - Cleaning Resources
+2020-10-25 05:12:16 - SIGINT recieved
+2020-10-25 05:12:16 - Cleaning Resources
+2020-10-25 05:12:20 - 4709 has terminated with status code 0
+27.0.0.1
 2020-10-24 01:19:29 - connection received from 127.0.0.1
 2020-10-24 01:19:29 - attempting to execute ./testing/test_exec 1 
 2020-10-24 01:19:29 - connection received from 127.0.0.1

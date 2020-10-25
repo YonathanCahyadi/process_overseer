@@ -7,4 +7,6 @@
 
 unsigned long mem_usage(int pid);
 
+float mem_usage_percentage(unsigned long mem_usage);
+
 #endif /** LIB_OVERSEER_PROC_H_ */

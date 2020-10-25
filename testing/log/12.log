@@ -1,5 +1,6 @@
-2020-10-24 01:19:31 - attempting to execute ./testing/test_exec 12 
-2020-10-24 01:19:31 - ./testing/test_exec 9  has been executed with pid 21390
+2020-10-25 05:12:09 - attempting to execute ./testing/test_exec 12 
+2020-10-25 05:12:09 - 4704 has terminated with status code 0
+d with pid 21390
 2020-10-24 01:19:31 - 21390 has terminated with status code 0
 2020-10-24 01:19:32 - ./testing/test_exec 15  has been executed with pid 21396
 2020-10-24 01:19:32 - 21396 has terminated with status code 0

@@ -5,9 +5,8 @@
 #include <linux/limits.h>
 #include "../global/data_structure.h"
 #include "../global/network.h"
+#include "logging.h"
 
-
-#define DEFAULT_TIME_LENGTH 26
 
 
 typedef struct request_queue_node_struct {
@@ -17,7 +16,7 @@ typedef struct request_queue_node_struct {
 } request_queue_node;
 
 typedef struct process_record_node_struct{
-    char time[DEFAULT_TIME_LENGTH];
+    char time[TIME_FORMAT_LEN];
     unsigned long mem_usage;
     float percentage;
     struct process_record_node_struct* next;
@@ -35,7 +34,6 @@ void queue_request(socket_addr* client_info, request* req) ;
 
 request_queue_node* deque_request();
 
-
 void free_request_queue_node(request_queue_node *node);
 
 void free_request_queue();
@@ -50,6 +48,6 @@ void free_process_queue();
 
 process_queue_node* get_process_queue_head();
 
-void print_process_queue();
+
 
 #endif /** LIB_OVERSEER_QUEUE_H_ */

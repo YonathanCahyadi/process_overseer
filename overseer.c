@@ -32,6 +32,7 @@ pthread_cond_t condition_var = PTHREAD_COND_INITIALIZER;
 
 volatile int thread_loop_running = 1;
 volatile sig_atomic_t stop = 0;
+volatile int sigint_flag = 0;
 
 int socket_fd;
 int connection;
@@ -80,13 +81,19 @@ int main(int argc, char** argv) {
 		pthread_cond_signal(&condition_var);
 	}
 	
-	
 	return 0;
 }
 
 
 
-/** other function */
+
+/**
+ * @brief  start all the thread needed
+ * @note   this function will start:
+ * 		   5 Thread for request handling
+ * 		   1 Thread for updating process memory usage
+ * @retval None
+ */
 void start_thread() {
 	/** set the thread attr */
 	pthread_attr_t attr;
@@ -102,6 +109,13 @@ void start_thread() {
 	pthread_create(&updater_thread_id, &attr, mem_usage_updater, NULL);
 }
 
+/**
+ * @brief  close all thread used
+ * @note   this function will close:
+ * 		   5 Thread for request handling
+ * 		   1 Thread for updating process memory usage
+ * @retval None
+ */
 void close_thread() {
 	/** stop the loop inside the thread routine */
 	pthread_mutex_lock(&handler_mutex);
@@ -120,6 +134,12 @@ void close_thread() {
 	pthread_join(updater_thread_id, NULL);
 }
 
+/**
+ * @brief  handler for request execution and response
+ * @note   
+ * @param  arg: 
+ * @retval None
+ */
 void* handle_request_loop(void* arg) {
 	int running = 1;
 	while (running) {
@@ -153,15 +173,23 @@ void* handle_request_loop(void* arg) {
 	return NULL;
 }
 
+/**
+ * @brief  update the process memory usage
+ * @note   This function will run every second
+ * @param  *arg: 
+ * @retval None
+ */
 void* mem_usage_updater(void *arg){
 	
 	int running = 1;
 	while(running){
 		pthread_mutex_lock(&process_mutex);
 		update_process_queue();
-		// print_process_queue();
 		pthread_mutex_unlock(&process_mutex);
+		
 		sleep(1);
+
+		/** check if loop should running */
 		pthread_mutex_lock(&handler_mutex);
 		if(!thread_loop_running) running = 0;
 		pthread_mutex_unlock(&handler_mutex);
@@ -172,6 +200,11 @@ void* mem_usage_updater(void *arg){
 	return NULL;
 }
 
+/**
+ * @brief  set the signaling for main process
+ * @note   This function will set the SIGINT
+ * @retval None
+ */
 void set_signal() {
 	struct sigaction sa;
 	sa.sa_flags = 0; /** disable the SA_RESTART */
@@ -182,14 +215,20 @@ void set_signal() {
 	CHECK(sigaction(SIGINT, &sa, NULL), "failed to set SIGINT signal handler (%s)", strerror(errno));
 }
 
+/**
+ * @brief  handler in case SIGNAL is recieved
+ * @note   
+ * @param  num: interupt number
+ * @retval None
+ */
 void signal_handler(int num) {
-	if(num == SIGINT){
+	if(num == SIGINT && (sigint_flag == 0)){
 		print_log(stdout, "SIGINT recieved");
-		
+		sigint_flag = 1;
 		/** stop the loop in main */
 		stop = 1;
 		
-		print_log(stdout, "Cleaning Resources");
+		print_log(stdout, "Cleaning Resources and terminating");
 
 		/** free unused allocated req and address holder */
 		free(req);
@@ -197,7 +236,7 @@ void signal_handler(int num) {
 
 		/** kill all child */
 		kill_all_child(process_mutex);
-
+		
 		/** close thread */
 		close_thread();
 
@@ -209,6 +248,9 @@ void signal_handler(int num) {
 
 		/** close socket */
 		close_socket(socket_fd);
+
+		/** exit the program */
+		exit(0);
 		
 	}
 }

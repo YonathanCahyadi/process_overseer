@@ -12,6 +12,11 @@
 #include "../global/macro.h"
 #include "../global/network.h"
 
+/**
+ * @brief  print help message
+ * @note   
+ * @return None
+ */
 void help() {
 	printf("Usage <address> <port> {[-o out_file] [-log log_file] [-t seconds] <file> [arg...] | mem [pid] | memkill <percent>}\n");
 	printf("\t--help:\t print usage message\n");
@@ -21,6 +26,11 @@ void help() {
 	exit(0);
 }
 
+/**
+ * @brief  print an error usage message
+ * @note   
+ * @return None
+ */
 void usage() {
 	fprintf(stderr, "%s\n", "Error: Usage <address> <port> {[-o out_file] [-log log_file] [-t seconds] <file> [arg...] | mem [pid] | memkill <percent>}\n");
 	exit(1);
@@ -28,7 +38,15 @@ void usage() {
 
 
 
-// FIXME need to add mem, memkill, and arguments order between options and arg <file>
+/**
+ * @brief  get the user input from the command line arguments, and store it in the params
+ * @note   
+ * @param  argc: arguments count
+ * @param  **argv: arguments vector
+ * @param  *sock_addr: pointer type sock_addr, where it store the network info <url, port> 
+ * @param  *req: pointer type request, where it store the request to sent to the overseer
+ * @return None
+ */
 void get_user_input(int argc, char **argv, socket_addr *sock_addr, request *req) {
 	/** validate user input */
 	if (argc < 3) {
@@ -154,6 +172,13 @@ void get_user_input(int argc, char **argv, socket_addr *sock_addr, request *req)
 	}
 }
 
+/**
+ * @brief  Make request struct into JSON format
+ * @note   
+ * @param  req: the request to serialize
+ * @param  *result: variable to store the result of serialization 
+ * @return None
+ */
 void serialize_request(request req, char *result) {
 	/** serialize the request struct */
 	CHECK(snprintf(result,
@@ -174,6 +199,13 @@ void serialize_request(request req, char *result) {
 	      "serializing failed!");
 }
 
+/**
+ * @brief  send request through the socket 
+ * @note   this function will serialize the request into JSON and send it over the socket
+ * @param  socket_fd: the socket file descriptor
+ * @param  req: the request to be sended
+ * @return None
+ */
 void send_request(int socket_fd, request req) {
 	char buffer[MAX_JSON_LEN];
 	CLEAR_CHAR_BUFFER(buffer, MAX_JSON_LEN);

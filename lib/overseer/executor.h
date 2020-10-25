@@ -7,7 +7,7 @@
 #include "queue.h"
 
 #define MAX_ACTIVE_PROCESS 10
-
+#define DEFAULT_TIMEOUT 10
 
 void request_exec(request_queue_node req_node, pthread_mutex_t pro_mutex);
 

@@ -18,7 +18,17 @@
 #include "../global/data_structure.h"
 #include "../global/macro.h"
 
+volatile int sleep_interupt = 0;
+pthread_mutex_t sleep_interupt_mutex = PTHREAD_MUTEX_INITIALIZER;
 
+/**
+ * @brief  Check if exec is successfuly executed
+ * @note   The function will wait for 1 second before checking, 
+ * 		   If child process is exist print log for sucessfull execution
+ * @param  pid: The process PID that need to be checked
+ * @param  req_node: The request
+ * @return None
+ */
 void check_exec(int pid, request_queue_node req_node){
 	int child_status_code;
 	/** check child status */
@@ -28,31 +38,80 @@ void check_exec(int pid, request_queue_node req_node){
 	}
 }
 
+/**
+ * @brief  interupt sleep 
+ * @note   
+ * @retval None
+ */
+void interupt_sleep(){
+	pthread_mutex_lock(&sleep_interupt_mutex);
+	sleep_interupt = 1;
+	pthread_mutex_unlock(&sleep_interupt_mutex);
+}
+
+/**
+ * @brief  sleep while checking for interupt
+ * @note   
+ * @param  time: time to sleep
+ * @return None
+ */
+void sleep2(int time){
+	int current_sec = 0;
+	int interupt = 0;
+	while((current_sec < time) && !interupt){
+		pthread_mutex_lock(&sleep_interupt_mutex);
+		if(sleep_interupt) interupt = 1;
+		pthread_mutex_unlock(&sleep_interupt_mutex);
+		sleep(1);
+		current_sec++;
+	}
+}
+
+/**
+ * @brief  Handle the Child Process Signaling
+ * @note   This function will wait for 10 second if t_flag in req_node is not ON and req_node->seconds is not specified.
+ * 		   After 10 second or n seconds, SIGTERM will be sent to the process with the specified PID and wait for 5 seconds.
+ * 		   After 5 seconds ends and process is still alive the SIGKILL will be sent. 
+ * @param  pid: The Child Process PID 
+ * @param  req_node: The request
+ * @return None
+ */
 void child_process_signaling(int pid, request_queue_node req_node){
 	
 	int child_status_code = 0;
 	
-	/** child process signaling */
+	/** child process signaling time */
 	if(req_node.req->t_flag){
-		sleep(req_node.req->seconds);
+		sleep2(req_node.req->seconds);
 	}else{
-		sleep(10);
+		sleep2(DEFAULT_TIMEOUT);
 	}
+
+	/** signaling and terminating the child process */
 	if(waitpid(pid, &child_status_code, WNOHANG) == 0){/** child process still exist */
 		kill(pid, SIGTERM);
 		print_log(stdout, "sent SIGTERM to %d", pid);
-		sleep(5);
+		
+
+		sleep2(5);
 		if(waitpid(pid, &child_status_code, WNOHANG) == 0){/** child process still exist */
 			kill(pid, SIGKILL);
 			print_log(stdout, "sent SIGKILL to %d", pid);
-		}else{
+		}else{ /** child process finished */
 			print_log(stdout, "%d has terminated with status code %d", pid, WEXITSTATUS(child_status_code));
 		}
-	}else{
+	}else{ /** child process finished */
 		print_log(stdout, "%d has terminated with status code %d", pid, WEXITSTATUS(child_status_code));
 	}
 }
 
+/**
+ * @brief  Handle the request arguments execution
+ * @note   This function will execute the recieved request argument from the controler
+ * @param  req_node: The request
+ * @param  pro_mutex: The mutex related to process queue
+ * @return None
+ */
 void request_exec(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 	/** check if log flag is on, if it's on redirect the logging */
 	int terminal_fd[2]; /** saving the terminal file descriptor */
@@ -141,17 +200,11 @@ void request_exec(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 			queue_process(pid, req_node.req->arguments);
 			pthread_mutex_unlock(&pro_mutex);
 
-
 			/** check exec status */
 			check_exec(pid, req_node);
 
 			/** Child signaling */
 			child_process_signaling(pid, req_node);
-
-			/** remove child PID in the process pool */
-			pthread_mutex_lock(&pro_mutex);
-			// deque_process(pid);
-			pthread_mutex_unlock(&pro_mutex);
 			
 
 		} else { /** fork failed */
@@ -168,7 +221,12 @@ void request_exec(request_queue_node req_node, pthread_mutex_t pro_mutex) {
 	}
 }
 
-
+/**
+ * @brief  Kill all Child Process
+ * @note   This function will go through the process linked list, and sent SIGKILL to all of the process stored there.
+ * @param  pro_mutex: The mutex related to process queue
+ * @return None
+ */
 void kill_all_child(pthread_mutex_t pro_mutex){
 	pthread_mutex_lock(&pro_mutex);
 	process_queue_node* tmp = get_process_queue_head();
@@ -181,8 +239,18 @@ void kill_all_child(pthread_mutex_t pro_mutex){
 		}
 	}
 	pthread_mutex_unlock(&pro_mutex);
+
+	/** interupt all sleeping thread processing child process signaling */
+	interupt_sleep();
 }
 
+/**
+ * @brief  Handle the request for process memory usage
+ * @note   This function will look for the memory usage for each process and send a response back to the controler
+ * @param  req_node: The request
+ * @param  pro_mutex: The mutex related to process queue
+ * @return None
+ */
 void process_mem_req(request_queue_node req_node, pthread_mutex_t pro_mutex){
 	/** construct the data to be sent */
 	char buf[DEFAULT_MEM_REQ_RES];
@@ -227,6 +295,7 @@ void process_mem_req(request_queue_node req_node, pthread_mutex_t pro_mutex){
 		}
 
 		if(tmp != NULL){ 
+			/** <pid> <bytes> <file> [arg...] */
 			/** get all the usage  */
 			if(tmp->pid == req_node.req->pid){ /** process with specified pid exist */
 				process_records *tmp_record = tmp->records;
@@ -249,6 +318,13 @@ void process_mem_req(request_queue_node req_node, pthread_mutex_t pro_mutex){
 	SIZE_CHECK(nbyte, DEFAULT_MEM_REQ_RES, "error sending mem usage response");
 }
 
+/**
+ * @brief  Handle the request for memkill
+ * @note   This function will kill all process that use memory bigger than the specified percentage
+ * @param  req_node: The request
+ * @param  pro_mutex: The mutex relate to process queue
+ * @return None
+ */
 void process_memkill_req(request_queue_node req_node, pthread_mutex_t pro_mutex){
 	/** get each process last record of mem usage */
 	pthread_mutex_lock(&pro_mutex);

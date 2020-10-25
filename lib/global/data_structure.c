@@ -6,7 +6,12 @@
 #include "./macro.h"
 
 
-
+/**
+ * @brief  intiialize request struct with default value
+ * @note   
+ * @param  *req: the pointer to request struct
+ * @return None
+ */
 void init_request(request *req) {
     CLEAR_STRUCT(req, sizeof(request));
 	strncpy(req->arguments, NULL_STR, NULL_STR_LEN);
@@ -24,7 +29,12 @@ void init_request(request *req) {
 }
 
 
-
+/**
+ * @brief  print the value contained in the stuct request
+ * @note   
+ * @param  req: the request struct
+ * @return None
+ */
 void print_request(request req) {
 	printf("\033[0;32m");
 	printf("request:\n");

@@ -1,5 +1,6 @@
-2020-10-24 01:19:31 - attempting to execute ./testing/test_exec 11 
-2020-10-24 01:19:31 - ./testing/test_exec 7  has been executed with pid 21388
+2020-10-25 05:12:09 - attempting to execute ./testing/test_exec 11 
+2020-10-25 05:12:09 - 4703 has terminated with status code 0
+d with pid 21388
 2020-10-24 01:19:31 - 21388 has terminated with status code 0
 2020-10-24 01:19:31 - ./testing/test_exec 8  has been executed with pid 21389
 2020-10-24 01:19:31 - 21389 has terminated with status code 0

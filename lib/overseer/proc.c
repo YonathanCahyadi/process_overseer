@@ -1,10 +1,26 @@
 #include "proc.h"
 #include <linux/limits.h>
 #include <stdio.h>
+#include <sys/sysinfo.h>
 #include <stdlib.h>
 #include <string.h>
 #include "../global/macro.h"
 
+/**
+ * @brief  Split the line given in then buf
+ * @note   This function will split the line given in the buff into: 
+ *         start of memory address, end of memory address, permission, offset, device, indoe, and path name.
+ *         After the spliting done it will store those val in the params given
+ * @param  buf: The line to be splited
+ * @param  *addr_start: pointer to store start of memory address
+ * @param  *end_addr: pointer to store end of memory address
+ * @param  permision[8]: pointer to store permission
+ * @param  *offset: pointer to store offset
+ * @param  dev[10]: pointer to store device
+ * @param  *inode: pointer to store inode
+ * @param  path_name[PATH_MAX]: pointer to store path name
+ * @return None
+ */
 void spliter(char* buf, 
             unsigned long *addr_start, 
             unsigned long *end_addr, 
@@ -115,6 +131,12 @@ void spliter(char* buf,
     strncpy(path_name, pathname_tmp, PATH_MAX);
 }
 
+/**
+ * @brief  Calculate the memory usage of the given pid
+ * @note   This function will open the /proc/{pid}/maps file and calculate the used memory of that process
+ * @param  pid: the process id 
+ * @return The total used memory
+ */
 unsigned long mem_usage(int pid){
     /** open the proc/[pid]/maps file */
     char maps_path[500];
@@ -146,4 +168,19 @@ unsigned long mem_usage(int pid){
         fclose(file);
     }
     return used_mem;
+}
+
+/**
+ * @brief  Calculate the precentage of memory usage based on the total available memory
+ * @note   This function will give the percentage of used memory based on the available total ram
+ * @param  mem_usage: the memory usage
+ * @return the percentage
+ */
+float mem_usage_percentage(unsigned long mem_usage){
+
+    /** percentage of memory used by the process */
+	struct sysinfo info;
+	sysinfo(&info);
+
+    return ((float)mem_usage / (float)info.totalram) * 100.0f;
 }

@@ -6,6 +6,14 @@
 
 #include "../global/macro.h"
 
+/**
+ * @brief  print a message in the log format
+ * @note   This will print message in the log format:
+ * 		   %Y-%m-%d %H:%M:%S - <message>
+ * @param  *type: the log type [stdout, stderr]
+ * @param  *format: the message format
+ * @return None
+ */
 void print_log(FILE *type, char *format, ...) {
 	time_t timer;
 	CLEAR_STRUCT(&timer, sizeof(timer));
