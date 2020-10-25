@@ -9,16 +9,16 @@
 
 #include "lib/global/macro.h"
 #include "lib/global/network.h"
+#include "lib/overseer/executor.h"
 #include "lib/overseer/logging.h"
 #include "lib/overseer/queue.h"
 #include "lib/overseer/utility.h"
-#include "lib/overseer/executor.h"
 
 /** function prototype */
 void start_thread();
 void close_thread();
 void* handle_request_loop(void* arg);
-void* mem_usage_updater(void *arg);
+void* mem_usage_updater(void* arg);
 void set_signal();
 void signal_handler(int num);
 
@@ -36,7 +36,7 @@ volatile int sigint_flag = 0;
 
 int socket_fd;
 int connection;
-request *req;
+request* req;
 socket_addr* in_addr;
 
 /** program main entry */
@@ -62,7 +62,7 @@ int main(int argc, char** argv) {
 		CHECK_MEM_ALLOCATION(req);
 		in_addr = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(socket_addr));
 		CHECK_MEM_ALLOCATION(in_addr);
-		
+
 		/** accepting connection */
 		accept_connection(socket_fd, in_addr);
 
@@ -71,7 +71,7 @@ int main(int argc, char** argv) {
 
 		/** recive request */
 		recv_request(in_addr->connection_fd, req);
-		
+
 		/** add request to the queue */
 		pthread_mutex_lock(&req_mutex);
 		queue_request(in_addr, req);
@@ -80,12 +80,9 @@ int main(int argc, char** argv) {
 		/** signal the thread that there is a request to be processed*/
 		pthread_cond_signal(&condition_var);
 	}
-	
+
 	return 0;
 }
-
-
-
 
 /**
  * @brief  start all the thread needed
@@ -100,8 +97,7 @@ void start_thread() {
 	pthread_attr_init(&attr);
 
 	/** start the thread for handling request */
-	for (int i = 0; i < MAX_THREAD_NUMBER; i++){
-		
+	for (int i = 0; i < MAX_THREAD_NUMBER; i++) {
 		pthread_create(&request_thread_pool[i], &attr, handle_request_loop, NULL);
 	}
 
@@ -121,12 +117,12 @@ void close_thread() {
 	pthread_mutex_lock(&handler_mutex);
 	thread_loop_running = 0;
 	pthread_mutex_unlock(&handler_mutex);
-	
+
 	/** wake every thread */
 	pthread_cond_broadcast(&condition_var);
 
 	/** close request handler thread */
-	for (int i = 0; i < MAX_THREAD_NUMBER; i++){
+	for (int i = 0; i < MAX_THREAD_NUMBER; i++) {
 		pthread_join(request_thread_pool[i], NULL);
 	}
 
@@ -152,7 +148,6 @@ void* handle_request_loop(void* arg) {
 		}
 		pthread_mutex_unlock(&req_mutex);
 
-
 		if (req_node) { /** there is request */
 			/** process request */
 			process_request(*req_node, process_mutex);
@@ -162,12 +157,10 @@ void* handle_request_loop(void* arg) {
 			free_request_queue_node(req_node);
 		}
 
-
 		/** check if thread should running */
 		pthread_mutex_lock(&handler_mutex);
-		if(!thread_loop_running) running = 0;
+		if (!thread_loop_running) running = 0;
 		pthread_mutex_unlock(&handler_mutex);
-
 	}
 
 	return NULL;
@@ -179,24 +172,21 @@ void* handle_request_loop(void* arg) {
  * @param  *arg: 
  * @retval None
  */
-void* mem_usage_updater(void *arg){
-	
+void* mem_usage_updater(void* arg) {
 	int running = 1;
-	while(running){
+	while (running) {
 		pthread_mutex_lock(&process_mutex);
 		update_process_queue();
 		pthread_mutex_unlock(&process_mutex);
-		
+
 		sleep(1);
 
 		/** check if loop should running */
 		pthread_mutex_lock(&handler_mutex);
-		if(!thread_loop_running) running = 0;
+		if (!thread_loop_running) running = 0;
 		pthread_mutex_unlock(&handler_mutex);
 	}
 
-	
-	
 	return NULL;
 }
 
@@ -222,12 +212,12 @@ void set_signal() {
  * @retval None
  */
 void signal_handler(int num) {
-	if(num == SIGINT && (sigint_flag == 0)){
+	if (num == SIGINT && (sigint_flag == 0)) {
 		print_log(stdout, "SIGINT recieved");
 		sigint_flag = 1;
 		/** stop the loop in main */
 		stop = 1;
-		
+
 		print_log(stdout, "Cleaning Resources and terminating");
 
 		/** free unused allocated req and address holder */
@@ -236,7 +226,7 @@ void signal_handler(int num) {
 
 		/** kill all child */
 		kill_all_child(process_mutex);
-		
+
 		/** close thread */
 		close_thread();
 
@@ -251,6 +241,5 @@ void signal_handler(int num) {
 
 		/** exit the program */
 		exit(0);
-		
 	}
 }

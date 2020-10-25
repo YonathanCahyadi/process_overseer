@@ -1,11 +1,11 @@
 #ifndef LIB_OVERSEER_UTILITY_H_
 #define LIB_OVERSEER_UTILITY_H_
 
-#include <stdio.h>
 #include <pthread.h>
-#include "queue.h"
+#include <stdio.h>
 
 #include "../global/network.h"
+#include "queue.h"
 
 #define REQUEST_DESERIALIZATION_FORMAT "{o_flag: %d, out_file: %[^\t\n,], t_flag: %d, seconds: %d, log_flag: %d, log_file: %[^\t\n,], mem_flag: %d, pid: %d, memkill_flag: %d, percentage: %f, arguments_flag: %d, arguments: %[^\t\n}]}"
 #define WRITE 1

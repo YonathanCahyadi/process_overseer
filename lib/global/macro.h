@@ -22,8 +22,8 @@ void SIZE_CHECK(int nbyte, int expected_size, char* err_msg);
 
 int IS_INTERGER(const char* str);
 
-int IS_FLOAT(const char *str);
+int IS_FLOAT(const char* str);
 
-void EXEC(int (*exec)(const char*, char* const*), char * const* argv, void (*callback)(FILE*, char*, ...), char *args);
+void EXEC(int (*exec)(const char*, char* const*), char* const* argv, void (*callback)(FILE*, char*, ...), char* args);
 
 #endif

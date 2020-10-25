@@ -36,8 +36,6 @@ void usage() {
 	exit(1);
 }
 
-
-
 /**
  * @brief  get the user input from the command line arguments, and store it in the params
  * @note   
@@ -71,104 +69,103 @@ void get_user_input(int argc, char **argv, socket_addr *sock_addr, request *req)
 		exit(1);
 	}
 
-	if(argv[3] != NULL){
-	int c;
-	int log_flag = 0;
-	int t_flag = 0;
-	int mem_flag = 0;
-	int memkill_flag = 0;
-	int argument_flag = 0;
+	if (argv[3] != NULL) {
+		int c;
+		int log_flag = 0;
+		int t_flag = 0;
+		int mem_flag = 0;
+		int memkill_flag = 0;
+		int argument_flag = 0;
 
-
-	/** check for mem */
-	if(strncmp(argv[3], "mem", sizeof("mem")) == 0 ){
-		if(memkill_flag || argument_flag) usage();
-		mem_flag = 1;
-		req->mem_flag = ON;
-		if(argv[4] != NULL){
-			if(IS_INTERGER(argv[4])){
-				req->pid = atoi(argv[4]);
-			}else{
-				usage();
-			}
-		}else {
-			req->pid = -1;
-		}
-	}
-
-	/** check for memkill */
-	if(strncmp(argv[3], "memkill", sizeof("memkill")) == 0 ){
-		if(mem_flag || argument_flag) usage();
-		memkill_flag = 1;
-		req->memkill_flag = ON;
-		if(argv[4] != NULL){	
-			if(IS_FLOAT(argv[4])){
-				req->percentage = atof(argv[4]);
-			}else{
-				usage();
-			}
-		}else {
-			usage();
-		}
-	}
-
-	/** id user got other things inputed */
-	if (argc > 2) {
-		/** get the inputed options */
-		struct option options[] = {
-		    {"o", required_argument, NULL, 'o'},
-		    {"t", required_argument, NULL, 't'},
-		    {"log", required_argument, NULL, 'l'},
-		    {0, 0, 0, 0}};
-
-		while ((c = getopt_long_only(argc, argv, "o:l:t:", options, NULL)) != EOF) {
-			switch (c) {
-			case 'o':
-				if (memkill_flag || mem_flag || log_flag || t_flag || argument_flag) usage();
-				// o_flag = 1;
-				req->o_flag = ON;
-				strncpy(req->out_file_path, optarg, PATH_MAX);
-				break;
-			case 'l':
-				if (memkill_flag || mem_flag || t_flag || argument_flag) usage();
-				log_flag = 1;
-				req->log_flag = ON;
-				strncpy(req->log_file_path, optarg, PATH_MAX);
-				break;
-			case 't':
-				if (memkill_flag || mem_flag || argument_flag) usage();
-				if (IS_INTERGER(optarg)) {
-					t_flag = 1;
-					req->t_flag = ON;
-					req->seconds = atoi(optarg);
+		/** check for mem */
+		if (strncmp(argv[3], "mem", sizeof("mem")) == 0) {
+			if (memkill_flag || argument_flag) usage();
+			mem_flag = 1;
+			req->mem_flag = ON;
+			if (argv[4] != NULL) {
+				if (IS_INTERGER(argv[4])) {
+					req->pid = atoi(argv[4]);
 				} else {
 					usage();
 				}
-				break;
-			case ':':
-			case '?':
-			default:
-				argument_flag = 1;
-				break;
+			} else {
+				req->pid = -1;
 			}
 		}
 
-		if(!(mem_flag || memkill_flag)){ /** only take arguments only and only if mem and memkill falg is OFF */
-			/** get the <file> [args...] */
-			optind += 2;
-			if (optind < argc) {
-				char buffer[PATH_MAX];
-				CLEAR_CHAR_BUFFER(buffer, PATH_MAX);
-				while (optind < argc) {
-					strcat(buffer, argv[optind++]);
-					strcat(buffer, " ");
+		/** check for memkill */
+		if (strncmp(argv[3], "memkill", sizeof("memkill")) == 0) {
+			if (mem_flag || argument_flag) usage();
+			memkill_flag = 1;
+			req->memkill_flag = ON;
+			if (argv[4] != NULL) {
+				if (IS_FLOAT(argv[4])) {
+					req->percentage = atof(argv[4]);
+				} else {
+					usage();
 				}
-				argument_flag = 1;
-				req->arguments_flag = ON;
-				strncpy(req->arguments, buffer, PATH_MAX);
+			} else {
+				usage();
 			}
 		}
-	}
+
+		/** id user got other things inputed */
+		if (argc > 2) {
+			/** get the inputed options */
+			struct option options[] = {
+			    {"o", required_argument, NULL, 'o'},
+			    {"t", required_argument, NULL, 't'},
+			    {"log", required_argument, NULL, 'l'},
+			    {0, 0, 0, 0}};
+
+			while ((c = getopt_long_only(argc, argv, "o:l:t:", options, NULL)) != EOF) {
+				switch (c) {
+				case 'o':
+					if (memkill_flag || mem_flag || log_flag || t_flag || argument_flag) usage();
+					// o_flag = 1;
+					req->o_flag = ON;
+					strncpy(req->out_file_path, optarg, PATH_MAX);
+					break;
+				case 'l':
+					if (memkill_flag || mem_flag || t_flag || argument_flag) usage();
+					log_flag = 1;
+					req->log_flag = ON;
+					strncpy(req->log_file_path, optarg, PATH_MAX);
+					break;
+				case 't':
+					if (memkill_flag || mem_flag || argument_flag) usage();
+					if (IS_INTERGER(optarg)) {
+						t_flag = 1;
+						req->t_flag = ON;
+						req->seconds = atoi(optarg);
+					} else {
+						usage();
+					}
+					break;
+				case ':':
+				case '?':
+				default:
+					argument_flag = 1;
+					break;
+				}
+			}
+
+			if (!(mem_flag || memkill_flag)) { /** only take arguments only and only if mem and memkill falg is OFF */
+				/** get the <file> [args...] */
+				optind += 2;
+				if (optind < argc) {
+					char buffer[PATH_MAX];
+					CLEAR_CHAR_BUFFER(buffer, PATH_MAX);
+					while (optind < argc) {
+						strcat(buffer, argv[optind++]);
+						strcat(buffer, " ");
+					}
+					argument_flag = 1;
+					req->arguments_flag = ON;
+					strncpy(req->arguments, buffer, PATH_MAX);
+				}
+			}
+		}
 	}
 }
 

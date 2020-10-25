@@ -5,7 +5,6 @@
 
 #include "./macro.h"
 
-
 /**
  * @brief  intiialize request struct with default value
  * @note   
@@ -13,7 +12,7 @@
  * @return None
  */
 void init_request(request *req) {
-    CLEAR_STRUCT(req, sizeof(request));
+	CLEAR_STRUCT(req, sizeof(request));
 	strncpy(req->arguments, NULL_STR, NULL_STR_LEN);
 	strncpy(req->log_file_path, NULL_STR, NULL_STR_LEN);
 	strncpy(req->out_file_path, NULL_STR, NULL_STR_LEN);
@@ -27,7 +26,6 @@ void init_request(request *req) {
 	req->pid = 0;
 	req->percentage = 0.0f;
 }
-
 
 /**
  * @brief  print the value contained in the stuct request
@@ -50,5 +48,5 @@ void print_request(request req) {
 	printf("memkill_flag: %d\n", req.memkill_flag);
 	printf("percent: %f\n", req.percentage);
 	printf("arguments_flag: %d\n", req.arguments_flag);
-    printf("arguments: %s\n", req.arguments);
+	printf("arguments: %s\n", req.arguments);
 }

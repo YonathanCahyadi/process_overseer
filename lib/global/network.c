@@ -1,6 +1,7 @@
 #include "network.h"
 
 #include <arpa/inet.h>
+#include <errno.h>
 #include <netdb.h>
 #include <netinet/in.h>
 #include <netinet/ip.h>
@@ -9,7 +10,6 @@
 #include <sys/socket.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <errno.h>
 
 #include "macro.h"
 
@@ -126,12 +126,10 @@ int accept_connection(int socket_fd, socket_addr *in_addr) {
 	/** accept incomming connection */
 	int client_fd = CHECK2(accept(socket_fd, (struct sockaddr *)&client, &client_len), "failed to accept incomming connection! (%s)", strerror(errno));
 
-
-
 	/** get incomming connection ip addr */
 	char ip[INET_ADDRSTRLEN];
 	CLEAR_CHAR_BUFFER(ip, INET_ADDRSTRLEN);
-   
+
 	inet_ntop(AF_INET, &client.sin_addr, ip, INET_ADDRSTRLEN);
 	/** store connection ip addr, port and the connection_fd */
 	strncpy(in_addr->url, ip, INET_ADDRSTRLEN);

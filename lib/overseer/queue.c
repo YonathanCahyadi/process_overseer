@@ -1,22 +1,22 @@
 #include "queue.h"
-#include <stdlib.h>
-#include <time.h>
+
+#include <errno.h>
+#include <fcntl.h>
+#include <linux/limits.h>
 #include <pthread.h>
 #include <stdio.h>
-#include <unistd.h>
+#include <stdlib.h>
 #include <string.h>
-#include <sys/types.h>
 #include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
-#include <linux/limits.h>
-
+#include <sys/types.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "../global/data_structure.h"
-#include "../global/network.h"
 #include "../global/macro.h"
-#include "proc.h"
+#include "../global/network.h"
 #include "logging.h"
+#include "proc.h"
 
 static int num_of_queued_request = 0;
 static request_queue_node* request_head = NULL;
@@ -39,10 +39,9 @@ void queue_request(socket_addr* client_info, request* req) {
 	CHECK_MEM_ALLOCATION(new_node);
 
 	/** populate the new node */
-    new_node->client_info = client_info;
+	new_node->client_info = client_info;
 	new_node->req = req;
 	new_node->next = NULL;
-
 
 	/** add new node to the linked list */
 	if (num_of_queued_request == 0) { /** linked list is empty */
@@ -53,10 +52,8 @@ void queue_request(socket_addr* client_info, request* req) {
 		request_tail = new_node;
 	}
 
-    /** increase the num of item stored in the linked list */
+	/** increase the num of item stored in the linked list */
 	num_of_queued_request++;
-
-
 }
 
 /**
@@ -64,24 +61,22 @@ void queue_request(socket_addr* client_info, request* req) {
  * @note   This function will get the request from the head. (LIFO)
  * @return the request queue node
  */
-request_queue_node* deque_request(){
-    request_queue_node* retval = NULL;
+request_queue_node* deque_request() {
+	request_queue_node* retval = NULL;
 
-   
-    /** if there is something on the linked list */
-    if(num_of_queued_request > 0){
-        retval = request_head;
-        request_head = request_head->next;
+	/** if there is something on the linked list */
+	if (num_of_queued_request > 0) {
+		retval = request_head;
+		request_head = request_head->next;
 
-        /** if the node was last of the list */
-        if(request_head == NULL) request_tail = NULL;
+		/** if the node was last of the list */
+		if (request_head == NULL) request_tail = NULL;
 
-        /** decrease the num of item stored in the linked list */
-        num_of_queued_request--;
-    }
+		/** decrease the num of item stored in the linked list */
+		num_of_queued_request--;
+	}
 
-
-    return retval;
+	return retval;
 }
 
 /**
@@ -90,12 +85,11 @@ request_queue_node* deque_request(){
  * @param  *node: Node to be freed 
  * @return None
  */
-void free_request_queue_node(request_queue_node *node){
-    
-    /** free allocated dynamic resources */
-    free(node->client_info);
-    free(node->req);
-    free(node);
+void free_request_queue_node(request_queue_node* node) {
+	/** free allocated dynamic resources */
+	free(node->client_info);
+	free(node->req);
+	free(node);
 }
 
 /**
@@ -103,14 +97,14 @@ void free_request_queue_node(request_queue_node *node){
  * @note   This function will iterate through all the node in the request linked list and freed the node one by one
  * @return None
  */
-void free_request_queue(){
-    request_queue_node* tmp;
-    while (request_head != NULL){
-       tmp = request_head;
-       request_head = request_head->next;
-       free_request_queue_node(tmp);
-       num_of_queued_request--;
-    }
+void free_request_queue() {
+	request_queue_node* tmp;
+	while (request_head != NULL) {
+		tmp = request_head;
+		request_head = request_head->next;
+		free_request_queue_node(tmp);
+		num_of_queued_request--;
+	}
 }
 
 /**
@@ -118,8 +112,8 @@ void free_request_queue(){
  * @note   This function will return the head of linked list where process history is stored
  * @return pointer to the process linked list head
  */
-process_queue_node* get_process_queue_head(){
-    return process_head;
+process_queue_node* get_process_queue_head() {
+	return process_head;
 }
 
 /**
@@ -129,34 +123,34 @@ process_queue_node* get_process_queue_head(){
  * @param  *head: the process record linked list head
  * @return None
  */
-void add_record(int pid, process_records *head){
-    /** create new node */
-    process_records *new_node = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(process_records));
-    CHECK_MEM_ALLOCATION(new_node);
+void add_record(int pid, process_records* head) {
+	/** create new node */
+	process_records* new_node = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(process_records));
+	CHECK_MEM_ALLOCATION(new_node);
 
-    /** get the current time and store it */
-    time_t timer = time(NULL);
-    struct tm* tm_info = localtime(&timer);
-    strftime(new_node->time, TIME_FORMAT_LEN, TIME_FORMAT, tm_info);
+	/** get the current time and store it */
+	time_t timer = time(NULL);
+	struct tm* tm_info = localtime(&timer);
+	strftime(new_node->time, TIME_FORMAT_LEN, TIME_FORMAT, tm_info);
 
-    /** get the current mem usage */
-    new_node->mem_usage = mem_usage(pid);
+	/** get the current mem usage */
+	new_node->mem_usage = mem_usage(pid);
 
-    /** percentage of memory used by the process */
-    new_node->percentage = mem_usage_percentage(new_node->mem_usage);
+	/** percentage of memory used by the process */
+	new_node->percentage = mem_usage_percentage(new_node->mem_usage);
 
-    /** assign the next address */
-    new_node->next = NULL;
+	/** assign the next address */
+	new_node->next = NULL;
 
-    if(head->next == NULL){ /** check if record only have 1 item */
-        head->next = new_node;
-    }else{
-        /** go to the last node */
-        process_records *tmp = head;
-        for(; tmp->next != NULL; tmp = tmp->next);
-        tmp->next = new_node; /** add new record to the last node */
-    }
-
+	if (head->next == NULL) { /** check if record only have 1 item */
+		head->next = new_node;
+	} else {
+		/** go to the last node */
+		process_records* tmp = head;
+		for (; tmp->next != NULL; tmp = tmp->next)
+			;
+		tmp->next = new_node; /** add new record to the last node */
+	}
 }
 
 /**
@@ -165,10 +159,11 @@ void add_record(int pid, process_records *head){
  * @param  *head: the process record head
  * @return the latest record
  */
-process_records* get_last_record(process_records *head){
-    process_records *tmp_record = head;
-	for(;tmp_record->next != NULL; tmp_record = tmp_record->next);
-    return tmp_record;
+process_records* get_last_record(process_records* head) {
+	process_records* tmp_record = head;
+	for (; tmp_record->next != NULL; tmp_record = tmp_record->next)
+		;
+	return tmp_record;
 }
 
 /**
@@ -177,11 +172,11 @@ process_records* get_last_record(process_records *head){
  * @param  *head: tje process record head
  * @return None
  */
-void free_process_record(process_records *head){
-    for(;head != NULL; head = head->next){
-        if(head == NULL) break;
-        free(head);
-    }
+void free_process_record(process_records* head) {
+	for (; head != NULL; head = head->next) {
+		if (head == NULL) break;
+		free(head);
+	}
 }
 
 /**
@@ -190,16 +185,15 @@ void free_process_record(process_records *head){
  *         and freed the node one by one, including the recorded process record
  * @return None
  */
-void free_process_queue(){
-    process_queue_node* tmp;
-    while (process_head != NULL){
-       tmp = process_head;
-       process_head = process_head->next;
-       free_process_record(tmp->records);
-       free(tmp);
-       num_of_active_process--;
-    }
-
+void free_process_queue() {
+	process_queue_node* tmp;
+	while (process_head != NULL) {
+		tmp = process_head;
+		process_head = process_head->next;
+		free_process_record(tmp->records);
+		free(tmp);
+		num_of_active_process--;
+	}
 }
 
 /**
@@ -209,34 +203,33 @@ void free_process_queue(){
  * @param  arguments: the process executed arguments
  * @return None
  */
-void queue_process(int pid, char* arguments){
-    /** create new node */
-    process_queue_node *new_node = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(process_queue_node));
-    CHECK_MEM_ALLOCATION(new_node);
+void queue_process(int pid, char* arguments) {
+	/** create new node */
+	process_queue_node* new_node = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(process_queue_node));
+	CHECK_MEM_ALLOCATION(new_node);
 
-    /** populate the new node */
-    new_node->pid = pid; 
-    strcpy(new_node->arguments, arguments);   
-    new_node->next = NULL;
+	/** populate the new node */
+	new_node->pid = pid;
+	strcpy(new_node->arguments, arguments);
+	new_node->next = NULL;
 
-    /** initiate the record */
-    process_records* record = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(process_records));
-    CHECK_MEM_ALLOCATION(record);
+	/** initiate the record */
+	process_records* record = calloc(DEFAULT_ALLOCATION_SIZE, sizeof(process_records));
+	CHECK_MEM_ALLOCATION(record);
 
-    record->mem_usage = 0;
-    record->next = NULL;
+	record->mem_usage = 0;
+	record->next = NULL;
 
-    /** get the current time and store it */
-    time_t timer = time(NULL);
-    struct tm* tm_info = localtime(&timer);
-    strftime(record->time, TIME_FORMAT_LEN, TIME_FORMAT, tm_info);
-    
-    /** add the record to the new node */
-    new_node->records = record;
-    new_node->record_len = new_node->record_len + 1;
+	/** get the current time and store it */
+	time_t timer = time(NULL);
+	struct tm* tm_info = localtime(&timer);
+	strftime(record->time, TIME_FORMAT_LEN, TIME_FORMAT, tm_info);
 
+	/** add the record to the new node */
+	new_node->records = record;
+	new_node->record_len = new_node->record_len + 1;
 
-    /** add new node to the linked list */
+	/** add new node to the linked list */
 	if (num_of_active_process == 0) { /** linked list is empty */
 		process_head = new_node;
 		process_tail = new_node;
@@ -245,10 +238,8 @@ void queue_process(int pid, char* arguments){
 		process_tail = new_node;
 	}
 
-    /** increase the num of item stored in the linked list */
+	/** increase the num of item stored in the linked list */
 	num_of_active_process++;
-
- 
 }
 
 /**
@@ -256,21 +247,17 @@ void queue_process(int pid, char* arguments){
  * @note   This will add new record to the stored process in the linked list
  * @return None
  */
-void update_process_queue(){
-    
-    if(num_of_active_process > 0){ /** if ther is something to update */
-        
-        process_queue_node *tmp;
-        tmp = process_head;
+void update_process_queue() {
+	if (num_of_active_process > 0) { /** if ther is something to update */
 
-        /** update the record */
-        while(tmp != NULL){
-            add_record(tmp->pid, tmp->records);
-            tmp->record_len = tmp->record_len + 1;
-            tmp = tmp->next;
-        }
-    }
+		process_queue_node* tmp;
+		tmp = process_head;
+
+		/** update the record */
+		while (tmp != NULL) {
+			add_record(tmp->pid, tmp->records);
+			tmp->record_len = tmp->record_len + 1;
+			tmp = tmp->next;
+		}
+	}
 }
-
-
-

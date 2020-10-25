@@ -1,10 +1,10 @@
 #include "macro.h"
 
+#include <errno.h>
+#include <stdarg.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <stdarg.h>
-#include <errno.h>
 
 /**
  * @brief  Check the memory allocation status
@@ -102,7 +102,7 @@ int CHECK(int i, char* err_msg_format, ...) {
  * @param  err_msg_format: err msg format in case of error 
  * @return i 
  */
-int CHECK2(int i, char* err_msg_format, ...){
+int CHECK2(int i, char* err_msg_format, ...) {
 	/** get the arguments */
 	va_list args;
 	va_start(args, err_msg_format);
@@ -111,20 +111,16 @@ int CHECK2(int i, char* err_msg_format, ...){
 	vsprintf(msg_buffer, err_msg_format, args);
 	va_end(args);
 
-
 	/** check if interupted by signal */
-	if(errno == EINTR){ 
+	if (errno == EINTR) {
 		return 0;
-	}else if(i == -1){ /** check if successful or failed */
+	} else if (i == -1) { /** check if successful or failed */
 		fprintf(stderr, "%s\n", msg_buffer);
 		exit(1);
-	} 
-	
+	}
 
 	return i;
 }
-
-
 
 /**
  * @brief  Check if string is a float
@@ -132,13 +128,13 @@ int CHECK2(int i, char* err_msg_format, ...){
  * @param  *str: the string
  * @return return 1 if valid, return 0 if invalid 
  */
-int IS_FLOAT(const char *str){
-    int len;
-    float dummy = 0.0;
-    if (sscanf(str, "%f %n", &dummy, &len) == 1 && len == (int)strlen(str))
-        return 1; /** a valid float */
-    else
-        return 0; /** an invalid float */
+int IS_FLOAT(const char* str) {
+	int len;
+	float dummy = 0.0;
+	if (sscanf(str, "%f %n", &dummy, &len) == 1 && len == (int)strlen(str))
+		return 1; /** a valid float */
+	else
+		return 0; /** an invalid float */
 }
 
 /**
@@ -159,9 +155,8 @@ int IS_INTERGER(const char* str) {
  * @note   
  * @return None
  */
-void EXEC(int (*exec)(const char*, char* const*), char * const* argv, void (*callback)(FILE*, char*, ...), char *args){
-	
-	if(exec(argv[0], argv) == -1){
+void EXEC(int (*exec)(const char*, char* const*), char* const* argv, void (*callback)(FILE*, char*, ...), char* args) {
+	if (exec(argv[0], argv) == -1) {
 		callback(stderr, "could not execute %s", args);
 		exit(1);
 	}

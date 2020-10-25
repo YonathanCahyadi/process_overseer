@@ -3,7 +3,6 @@
 
 #include <linux/limits.h>
 
-
 #define NULL_STR "NULL"
 #define NULL_STR_LEN 5
 #define OFF 0
@@ -23,8 +22,6 @@ typedef struct request_struct {
 	char log_file_path[PATH_MAX];
 	char arguments[PATH_MAX];
 } request;
-
-
 
 void init_request(request *req);
 
